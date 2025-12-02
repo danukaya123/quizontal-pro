@@ -2,12 +2,12 @@
 
 // Your Firebase Configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDY3xNEt4NIchAGlyGCFENJSA-nNcR78D4",
+  authDomain: "quizontal-app.firebaseapp.com",
+  projectId: "quizontal-app",
+  storageBucket: "quizontal-app.firebasestorage.app",
+  messagingSenderId: "579303957522",
+  appId: "1:579303957522:web:de120e697f4642287724cb"
 };
 
 // Initialize Firebase
