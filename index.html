@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizontal | Free Stock Media & AI Art</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Millions of free stock photos, HD videos, wallpapers, and AI-generated art. Download high-quality royalty-free content for commercial and personal use.">
+    <meta name="keywords" content="free stock photos, HD videos, wallpapers, AI art, royalty-free images">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Quizontal | Free Stock Media & AI Art">
+    <meta property="og:description" content="Download millions of free stock photos, HD videos, wallpapers, and create AI art - completely free!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead">
+    <meta property="og:url" content="https://quizontal.com">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <p>Loading Quizontal...</p>
+    </div>
+
+    <!-- Auth Modals -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2 id="authModalTitle">Welcome to Quizontal</h2>
+                <button class="modal-close" id="closeAuthModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-content">
+                    <!-- Login Form -->
+                    <form id="loginForm" class="auth-form active">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                                <button type="button" class="toggle-password">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                            <span class="btn-text">Login</span>
+                            <div class="btn-loading" style="display: none;">
+                                <div class="loading-spinner-small"></div>
+                            </div>
+                        </button>
+                        
+                        <div class="divider">
+                            <span>or continue with</span>
+                        </div>
+                        
+                        <div class="social-auth">
+                            <button type="button" class="social-btn google-btn" id="googleLogin">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button type="button" class="social-btn github-btn" id="githubLogin">
+                                <i class="fab fa-github"></i> GitHub
+                            </button>
+                        </div>
+                        
+                        <p class="auth-link">
+                            Don't have an account? <a href="#" class="switch-to-signup">Sign up</a>
+                        </p>
+                    </form>
+                    
+                    <!-- Signup Form -->
+                    <form id="signupForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="signupPassword" placeholder="Create a password (min. 6 characters)" required minlength="6">
+                                <button type="button" class="toggle-password">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupAvatar">Profile Picture (Optional)</label>
+                            <div class="avatar-upload">
+                                <div class="avatar-preview" id="avatarPreview">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <input type="file" id="signupAvatar" accept="image/*" class="avatar-input">
+                                <label for="signupAvatar" class="avatar-label">Choose Image</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="signupBtn">
+                            <span class="btn-text">Create Account</span>
+                            <div class="btn-loading" style="display: none;">
+                                <div class="loading-spinner-small"></div>
+                            </div>
+                        </button>
+                        
+                        <div class="divider">
+                            <span>or sign up with</span>
+                        </div>
+                        
+                        <div class="social-auth">
+                            <button type="button" class="social-btn google-btn" id="googleSignup">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button type="button" class="social-btn github-btn" id="githubSignup">
+                                <i class="fab fa-github"></i> GitHub
+                            </button>
+                        </div>
+                        
+                        <p class="auth-link">
+                            Already have an account? <a href="#" class="switch-to-login">Login</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-header">
+            <div class="profile-avatar-small">
+                <img id="dropdownAvatar" src="" alt="Profile">
+                <div class="online-status"></div>
+            </div>
+            <div class="profile-info">
+                <h4 id="dropdownName">Loading...</h4>
+                <p id="dropdownEmail">Loading...</p>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="#account" class="dropdown-item">
+            <i class="fas fa-user"></i> My Account
+        </a>
+        <a href="#collections" class="dropdown-item">
+            <i class="fas fa-bookmark"></i> My Collections
+        </a>
+        <a href="#downloads" class="dropdown-item">
+            <i class="fas fa-download"></i> Downloads
+        </a>
+        <a href="#favorites" class="dropdown-item">
+            <i class="fas fa-heart"></i> Favorites
+        </a>
+        <a href="#settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="container">
+                <!-- Logo -->
+                <a href="/" class="logo">
+                    <i class="fas fa-palette"></i>
+                    <span>Quizontal</span>
+                </a>
+
+                <!-- Main Navigation -->
+                <div class="nav-menu">
+                    <a href="#home" class="nav-link active">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#photos" class="nav-link">
+                        <i class="fas fa-image"></i> Photos
+                    </a>
+                    <a href="#videos" class="nav-link">
+                        <i class="fas fa-video"></i> Videos
+                    </a>
+                    <a href="#wallpapers" class="nav-link">
+                        <i class="fas fa-desktop"></i> Wallpapers
+                    </a>
+                    <a href="#ai" class="nav-link">
+                        <i class="fas fa-robot"></i> AI Generator
+                    </a>
+                    <a href="#collections" class="nav-link">
+                        <i class="fas fa-bookmark"></i> Collections
+                    </a>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="globalSearch" placeholder="Search millions of free images...">
+                    <button class="search-btn" id="globalSearchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <button class="action-btn upload-btn" id="uploadBtn">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
+                    </button>
+                    
+                    <!-- User Profile -->
+                    <div class="user-profile" id="userProfile">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="profile-name" id="profileName">Guest</span>
+                        <i class="fas fa-chevron-down profile-arrow"></i>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-header">
+                <div class="logo">
+                    <i class="fas fa-palette"></i>
+                    <span>Quizontal</span>
+                </div>
+                <button class="mobile-close-btn" id="mobileCloseBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-links">
+                <a href="#home" class="mobile-nav-link active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="#photos" class="mobile-nav-link">
+                    <i class="fas fa-image"></i> Photos
+                </a>
+                <a href="#videos" class="mobile-nav-link">
+                    <i class="fas fa-video"></i> Videos
+                </a>
+                <a href="#wallpapers" class="mobile-nav-link">
+                    <i class="fas fa-desktop"></i> Wallpapers
+                </a>
+                <a href="#ai" class="mobile-nav-link">
+                    <i class="fas fa-robot"></i> AI Generator
+                </a>
+                <a href="#collections" class="mobile-nav-link">
+                    <i class="fas fa-bookmark"></i> Collections
+                </a>
+                <div class="mobile-nav-divider"></div>
+                <a href="#account" class="mobile-nav-link">
+                    <i class="fas fa-user"></i> My Account
+                </a>
+                <a href="#downloads" class="mobile-nav-link">
+                    <i class="fas fa-download"></i> Downloads
+                </a>
+                <a href="#favorites" class="mobile-nav-link">
+                    <i class="fas fa-heart"></i> Favorites
+                </a>
+                <a href="#settings" class="mobile-nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <button class="mobile-nav-link logout-btn" id="mobileLogoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section" id="home">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Discover & Create<br>
+                        <span class="gradient-text">Stunning Visual Content</span>
+                    </h1>
+                    <p class="hero-description">
+                        Access millions of free stock photos, HD videos, wallpapers, 
+                        and generate unique AI art - all in one platform.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-image"></i>
+                            <div>
+                                <h3>5M+</h3>
+                                <p>Free Photos</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-video"></i>
+                            <div>
+                                <h3>2M+</h3>
+                                <p>HD Videos</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-desktop"></i>
+                            <div>
+                                <h3>10M+</h3>
+                                <p>Wallpapers</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-robot"></i>
+                            <div>
+                                <h3>∞</h3>
+                                <p>AI Generations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                         alt="Creative Artwork">
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Section -->
+        <section class="trending-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-fire"></i>
+                        Trending This Week
+                    </h2>
+                    <a href="#explore" class="view-all">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="trending-grid" id="trendingGrid">
+                    <!-- Trending content loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="container">
+                <h2 class="section-title">Popular Categories</h2>
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Categories loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Tabs -->
+        <section class="content-tabs-section">
+            <div class="container">
+                <div class="content-tabs">
+                    <button class="content-tab active" data-tab="photos">
+                        <i class="fas fa-image"></i> Photos
+                    </button>
+                    <button class="content-tab" data-tab="videos">
+                        <i class="fas fa-video"></i> Videos
+                    </button>
+                    <button class="content-tab" data-tab="wallpapers">
+                        <i class="fas fa-desktop"></i> Wallpapers
+                    </button>
+                    <button class="content-tab" data-tab="ai">
+                        <i class="fas fa-robot"></i> AI Generator
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photos Section -->
+        <section class="content-section active" id="photosSection">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Free Stock Photos</h2>
+                    <div class="filter-controls">
+                        <select class="filter-select" id="photoSort">
+                            <option value="popular">Most Popular</option>
+                            <option value="latest">Latest</option>
+                            <option value="featured">Featured</option>
+                        </select>
+                        <select class="filter-select" id="photoOrientation">
+                            <option value="">All Orientation</option>
+                            <option value="landscape">Landscape</option>
+                            <option value="portrait">Portrait</option>
+                            <option value="square">Square</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="masonry-grid" id="photosGrid">
+                    <!-- Photos loaded dynamically -->
+                </div>
+                <div class="load-more">
+                    <button class="btn btn-secondary" id="loadMorePhotos">
+                        <i class="fas fa-plus"></i> Load More Photos
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Videos Section -->
+        <section class="content-section" id="videosSection">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Free Stock Videos</h2>
+                    <div class="filter-controls">
+                        <select class="filter-select" id="videoSort">
+                            <option value="popular">Most Popular</option>
+                            <option value="latest">Latest</option>
+                            <option value="featured">Featured</option>
+                        </select>
+                        <select class="filter-select" id="videoDuration">
+                            <option value="">All Durations</option>
+                            <option value="short">Short (&lt;30s)</option>
+                            <option value="medium">Medium (30s-2min)</option>
+                            <option value="long">Long (&gt;2min)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="video-grid" id="videosGrid">
+                    <!-- Videos loaded dynamically -->
+                </div>
+                <div class="load-more">
+                    <button class="btn btn-secondary" id="loadMoreVideos">
+                        <i class="fas fa-plus"></i> Load More Videos
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wallpapers Section -->
+        <section class="content-section" id="wallpapersSection">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">HD Wallpapers</h2>
+                    <div class="filter-controls">
+                        <select class="filter-select" id="wallpaperSort">
+                            <option value="relevance">Relevance</option>
+                            <option value="date_added">Date Added</option>
+                            <option value="favorites">Favorites</option>
+                            <option value="toplist">Top List</option>
+                        </select>
+                        <select class="filter-select" id="wallpaperCategory">
+                            <option value="">All Categories</option>
+                            <option value="general">General</option>
+                            <option value="anime">Anime</option>
+                            <option value="people">People</option>
+                            <option value="nature">Nature</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="wallpaper-grid" id="wallpapersGrid">
+                    <!-- Wallpapers loaded dynamically -->
+                </div>
+                <div class="load-more">
+                    <button class="btn btn-secondary" id="loadMoreWallpapers">
+                        <i class="fas fa-plus"></i> Load More Wallpapers
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Generator Section -->
+        <section class="content-section" id="aiSection">
+            <div class="container">
+                <div class="ai-generator-container">
+                    <div class="ai-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-magic"></i> AI Image Generator
+                        </h2>
+                        <div class="ai-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-bolt"></i>
+                                <span id="generationCount">0</span> Generated
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-generator">
+                        <div class="ai-prompt-section">
+                            <div class="prompt-input-container">
+                                <textarea id="aiPrompt" class="prompt-input" 
+                                          placeholder="Describe your image... (e.g., A stunning landscape with mountains and sunset, digital art style)" 
+                                          rows="3"></textarea>
+                                <div class="prompt-actions">
+                                    <div class="char-count">
+                                        <span id="charCount">0</span>/500
+                                    </div>
+                                    <button class="btn btn-small" id="clearPrompt">
+                                        <i class="fas fa-eraser"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="style-selection">
+                                <h4>Style Presets:</h4>
+                                <div class="style-grid">
+                                    <button class="style-btn active" data-style="realistic">
+                                        <i class="fas fa-camera"></i> Photorealistic
+                                    </button>
+                                    <button class="style-btn" data-style="anime">
+                                        <i class="fas fa-paint-brush"></i> Anime
+                                    </button>
+                                    <button class="style-btn" data-style="digital">
+                                        <i class="fas fa-desktop"></i> Digital Art
+                                    </button>
+                                    <button class="style-btn" data-style="minimal">
+                                        <i class="fas fa-square"></i> Minimalist
+                                    </button>
+                                    <button class="style-btn" data-style="cyberpunk">
+                                        <i class="fas fa-city"></i> Cyberpunk
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="quick-prompts">
+                                <h4>Quick Ideas:</h4>
+                                <div class="quick-prompts-grid">
+                                    <button class="quick-prompt-btn" data-prompt="A futuristic city with flying cars and neon lights">
+                                        Futuristic City
+                                    </button>
+                                    <button class="quick-prompt-btn" data-prompt="A serene mountain landscape at golden hour">
+                                        Mountain Sunset
+                                    </button>
+                                    <button class="quick-prompt-btn" data-prompt="A cute anime character with magical powers">
+                                        Anime Character
+                                    </button>
+                                    <button class="quick-prompt-btn" data-prompt="Abstract geometric pattern in vibrant neon colors">
+                                        Abstract Art
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-large" id="generateAI">
+                                <i class="fas fa-magic"></i>
+                                <span>Generate Image</span>
+                                <div class="btn-loading" style="display: none;">
+                                    <div class="loading-spinner-small"></div>
+                                    <span>Generating...</span>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <div class="ai-progress" id="aiProgress" style="display: none;">
+                            <div class="progress-header">
+                                <h4>Creating Your Image</h4>
+                                <span class="progress-time" id="progressTime">0s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Processing Prompt</span>
+                                </div>
+                                <div class="progress-step">
+                                    <i class="fas fa-palette"></i>
+                                    <span>Generating Art</span>
+                                </div>
+                                <div class="progress-step">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Finalizing Image</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-results" id="aiResults">
+                            <div class="results-header">
+                                <h3>Generated Images</h3>
+                                <div class="results-actions">
+                                    <button class="btn btn-small" id="clearAllAI">
+                                        <i class="fas fa-trash"></i> Clear All
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ai-grid" id="aiGrid">
+                                <div class="empty-state">
+                                    <i class="fas fa-robot"></i>
+                                    <h4>No Images Generated Yet</h4>
+                                    <p>Enter a prompt above and click "Generate Image"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Collections Section -->
+        <section class="collections-section" id="collectionsSection">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-bookmark"></i> My Collections
+                    </h2>
+                    <button class="btn btn-primary" id="createCollectionBtn">
+                        <i class="fas fa-plus"></i> New Collection
+                    </button>
+                </div>
+                <div class="collections-grid" id="collectionsGrid">
+                    <div class="empty-collections">
+                        <i class="fas fa-bookmark"></i>
+                        <h3>No Collections Yet</h3>
+                        <p>Create your first collection to save your favorite content</p>
+                        <button class="btn btn-primary" id="createFirstCollection">
+                            Create Collection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Media Modal -->
+    <div class="media-modal" id="mediaModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-actions">
+                    <button class="modal-btn like-btn" id="modalLikeBtn">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <button class="modal-btn download-btn" id="modalDownloadBtn">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="modal-btn collection-btn" id="modalCollectionBtn">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                    <button class="modal-close" id="modalCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="media-container">
+                    <img id="modalImage" src="" alt="" class="modal-media">
+                    <video id="modalVideo" controls class="modal-media" style="display: none;">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="media-info">
+                    <div class="author-info">
+                        <div class="author-avatar" id="modalAuthorAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-details">
+                            <h4 id="modalAuthorName"></h4>
+                            <p id="modalStats"></p>
+                        </div>
+                    </div>
+                    <div class="media-tags" id="modalTags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div class="collection-modal" id="collectionModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="collectionModalTitle">Add to Collection</h3>
+                <button class="modal-close" id="closeCollectionModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="collection-list" id="collectionList">
+                    <!-- Collections loaded dynamically -->
+                </div>
+                <button class="btn btn-secondary btn-full" id="createNewCollectionBtn">
+                    <i class="fas fa-plus"></i> Create New Collection
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Collection Modal -->
+    <div class="create-collection-modal" id="createCollectionModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Create New Collection</h3>
+                <button class="modal-close" id="closeCreateCollectionModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createCollectionForm">
+                    <div class="form-group">
+                        <label for="collectionName">Collection Name</label>
+                        <input type="text" id="collectionName" placeholder="Enter collection name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionDescription">Description (Optional)</label>
+                        <textarea id="collectionDescription" placeholder="Describe your collection" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Visibility</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="visibility" value="public" checked>
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">Public</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="visibility" value="private">
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">Private</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        Create Collection
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-palette"></i>
+                        <span>Quizontal</span>
+                    </div>
+                    <p class="footer-description">
+                        The world's largest free stock media platform. 
+                        Discover, create, and share stunning visual content.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Products</h4>
+                    <ul class="footer-links">
+                        <li><a href="#photos">Free Photos</a></li>
+                        <li><a href="#videos">HD Videos</a></li>
+                        <li><a href="#wallpapers">Wallpapers</a></li>
+                        <li><a href="#ai">AI Generator</a></li>
+                        <li><a href="#api">API</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#press">Press</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#cookies">Cookie Policy</a></li>
+                        <li><a href="#licensing">Licensing</a></li>
+                        <li><a href="#dmca">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Quizontal. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#sitemap">Sitemap</a>
+                    <a href="#language">English</a>
+                    <a href="#help">Help Center</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="user-profile.js"></script>
+    <script src="collections.js"></script>
+    <script src="ai-generator.js"></script>
+    <script src="media-loader.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
