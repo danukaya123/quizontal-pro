@@ -1,404 +1,131 @@
-// app.js - Main Application Logic
+// app.js - Main application file (no ES6 modules)
 
-// Import Firebase Configuration
-import { 
-    auth, 
-    db, 
-    storage, 
-    googleProvider, 
-    githubProvider,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged,
-    collection,
-    addDoc,
-    getDocs,
-    getDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    query,
-    where,
-    orderBy,
-    limit,
-    serverTimestamp,
-    setDoc
-} from './firebase-config.js';
-
-import { 
-    initAuth,
-    showAuthModal,
-    hideAuthModal,
-    showToast,
-    uploadImage,
-    getUserProfile,
-    updateUserProfile
-} from './auth.js';
-
-import {
-    loadCollections,
-    createCollection,
-    addToCollection,
-    removeFromCollection,
-    getCollectionItems
-} from './collections.js';
-
-import {
-    initAIGenerator,
-    generateAI,
-    clearAIResults
-} from './ai-generator.js';
-
-import {
-    loadPhotos,
-    loadVideos,
-    loadWallpapers,
-    searchMedia,
-    loadTrending
-} from './media-loader.js';
-
-// DOM Elements
-const dom = {
-    // Loading
-    loadingScreen: document.getElementById('loadingScreen'),
-    
-    // Auth
-    authModal: document.getElementById('authModal'),
-    closeAuthModal: document.getElementById('closeAuthModal'),
-    loginForm: document.getElementById('loginForm'),
-    signupForm: document.getElementById('signupForm'),
-    loginBtn: document.getElementById('loginBtn'),
-    signupBtn: document.getElementById('signupBtn'),
-    googleLogin: document.getElementById('googleLogin'),
-    githubLogin: document.getElementById('githubLogin'),
-    googleSignup: document.getElementById('googleSignup'),
-    githubSignup: document.getElementById('githubSignup'),
-    switchToSignup: document.querySelector('.switch-to-signup'),
-    switchToLogin: document.querySelector('.switch-to-login'),
-    
-    // Profile
-    userProfile: document.getElementById('userProfile'),
-    profileDropdown: document.getElementById('profileDropdown'),
-    profileAvatar: document.getElementById('profileAvatar'),
-    profileName: document.getElementById('profileName'),
-    logoutBtn: document.getElementById('logoutBtn'),
-    mobileLogoutBtn: document.getElementById('mobileLogoutBtn'),
-    
-    // Navigation
-    mobileMenuBtn: document.getElementById('mobileMenuBtn'),
-    mobileCloseBtn: document.getElementById('mobileCloseBtn'),
-    mobileNav: document.getElementById('mobileNav'),
-    navLinks: document.querySelectorAll('.nav-link'),
-    mobileNavLinks: document.querySelectorAll('.mobile-nav-link'),
-    
-    // Search
-    globalSearch: document.getElementById('globalSearch'),
-    globalSearchBtn: document.getElementById('globalSearchBtn'),
-    
-    // Content Tabs
-    contentTabs: document.querySelectorAll('.content-tab'),
-    contentSections: document.querySelectorAll('.content-section'),
-    
-    // Media
-    photosGrid: document.getElementById('photosGrid'),
-    videosGrid: document.getElementById('videosGrid'),
-    wallpapersGrid: document.getElementById('wallpapersGrid'),
-    trendingGrid: document.getElementById('trendingGrid'),
-    categoriesGrid: document.getElementById('categoriesGrid'),
-    
-    // Load More
-    loadMorePhotos: document.getElementById('loadMorePhotos'),
-    loadMoreVideos: document.getElementById('loadMoreVideos'),
-    loadMoreWallpapers: document.getElementById('loadMoreWallpapers'),
-    
-    // Filters
-    photoSort: document.getElementById('photoSort'),
-    photoOrientation: document.getElementById('photoOrientation'),
-    videoSort: document.getElementById('videoSort'),
-    videoDuration: document.getElementById('videoDuration'),
-    wallpaperSort: document.getElementById('wallpaperSort'),
-    wallpaperCategory: document.getElementById('wallpaperCategory'),
-    
-    // AI Generator
-    aiPrompt: document.getElementById('aiPrompt'),
-    generateAI: document.getElementById('generateAI'),
-    
-    // Collections
-    collectionsGrid: document.getElementById('collectionsGrid'),
-    createCollectionBtn: document.getElementById('createCollectionBtn'),
-    createFirstCollection: document.getElementById('createFirstCollection'),
-    
-    // Modals
-    mediaModal: document.getElementById('mediaModal'),
-    modalCloseBtn: document.getElementById('modalCloseBtn'),
-    modalImage: document.getElementById('modalImage'),
-    modalVideo: document.getElementById('modalVideo'),
-    modalTitle: document.getElementById('modalTitle'),
-    modalAuthorName: document.getElementById('modalAuthorName'),
-    modalAuthorAvatar: document.getElementById('modalAuthorAvatar'),
-    modalStats: document.getElementById('modalStats'),
-    modalTags: document.getElementById('modalTags'),
-    modalLikeBtn: document.getElementById('modalLikeBtn'),
-    modalDownloadBtn: document.getElementById('modalDownloadBtn'),
-    modalCollectionBtn: document.getElementById('modalCollectionBtn'),
-    
-    // Collection Modals
-    collectionModal: document.getElementById('collectionModal'),
-    closeCollectionModal: document.getElementById('closeCollectionModal'),
-    collectionList: document.getElementById('collectionList'),
-    createNewCollectionBtn: document.getElementById('createNewCollectionBtn'),
-    
-    createCollectionModal: document.getElementById('createCollectionModal'),
-    closeCreateCollectionModal: document.getElementById('closeCreateCollectionModal'),
-    createCollectionForm: document.getElementById('createCollectionForm'),
-    collectionName: document.getElementById('collectionName'),
-    collectionDescription: document.getElementById('collectionDescription')
-};
-
-// App State
-const state = {
-    currentUser: null,
-    userProfile: null,
-    currentMedia: null,
-    currentView: 'photos',
-    photoPage: 1,
-    videoPage: 1,
-    wallpaperPage: 1,
-    isLoading: false,
-    collections: [],
-    favorites: [],
-    downloads: [],
-    aiImages: []
+// Global app state
+window.appState = {
+    currentView: 'home',
+    photos: [],
+    videos: [],
+    wallpapers: [],
+    isLoading: false
 };
 
 // Initialize Application
-async function initApp() {
-    try {
-        // Initialize Firebase Auth
-        await initAuth();
-        
-        // Setup event listeners
-        setupEventListeners();
-        
-        // Load initial content
-        await loadInitialContent();
-        
-        // Hide loading screen
-        setTimeout(() => {
-            dom.loadingScreen.classList.add('hidden');
-        }, 500);
-        
-    } catch (error) {
-        console.error('Failed to initialize app:', error);
-        showToast('Failed to load application. Please refresh the page.', 'error');
-    }
+function initApp() {
+    console.log("Initializing Quizontal application...");
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Load initial content
+    loadInitialContent();
+    
+    // Hide loading screen
+    setTimeout(hideLoadingScreen, 1500);
+    
+    console.log("Application initialized successfully");
 }
 
 // Setup Event Listeners
 function setupEventListeners() {
-    // Auth Events
-    dom.userProfile.addEventListener('click', toggleProfileDropdown);
-    dom.logoutBtn.addEventListener('click', handleLogout);
-    dom.mobileLogoutBtn.addEventListener('click', handleLogout);
-    dom.closeAuthModal.addEventListener('click', hideAuthModal);
+    console.log("Setting up event listeners...");
     
-    // Navigation Events
-    dom.mobileMenuBtn.addEventListener('click', () => {
-        dom.mobileNav.classList.add('active');
-        document.body.classList.add('modal-open');
-    });
-    
-    dom.mobileCloseBtn.addEventListener('click', () => {
-        dom.mobileNav.classList.remove('active');
-        document.body.classList.remove('modal-open');
-    });
-    
-    // Nav Links
-    dom.navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
+    // Navigation links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = link.getAttribute('href').substring(1);
-            switchView(target);
+            const view = this.getAttribute('href').replace('#', '');
+            switchView(view);
         });
     });
     
-    dom.mobileNavLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            if (link.classList.contains('logout-btn')) return;
-            e.preventDefault();
-            const target = link.getAttribute('href').substring(1);
-            switchView(target);
-            dom.mobileNav.classList.remove('active');
-            document.body.classList.remove('modal-open');
+    // Content tabs
+    const contentTabs = document.querySelectorAll('.content-tab');
+    contentTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const view = this.getAttribute('data-tab');
+            switchView(view);
         });
     });
     
-    // Content Tabs
-    dom.contentTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabName = tab.getAttribute('data-tab');
-            switchView(tabName);
+    // Search functionality
+    const searchBtn = document.getElementById('globalSearchBtn');
+    const searchInput = document.getElementById('globalSearch');
+    
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
         });
-    });
+    }
     
-    // Search
-    dom.globalSearchBtn.addEventListener('click', handleSearch);
-    dom.globalSearch.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSearch();
-    });
+    // Mobile menu
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+    const mobileNav = document.getElementById('mobileNav');
     
-    // Load More
-    dom.loadMorePhotos.addEventListener('click', () => {
-        state.photoPage++;
-        loadPhotos(state.photoPage);
-    });
+    if (mobileMenuBtn && mobileNav) {
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
     
-    dom.loadMoreVideos.addEventListener('click', () => {
-        state.videoPage++;
-        loadVideos(state.videoPage);
-    });
+    if (mobileCloseBtn && mobileNav) {
+        mobileCloseBtn.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
     
-    dom.loadMoreWallpapers.addEventListener('click', () => {
-        state.wallpaperPage++;
-        loadWallpapers(state.wallpaperPage);
-    });
+    // Profile dropdown
+    const userProfile = document.getElementById('userProfile');
+    const profileDropdown = document.getElementById('profileDropdown');
     
-    // Filters
-    dom.photoSort.addEventListener('change', () => {
-        state.photoPage = 1;
-        dom.photosGrid.innerHTML = '';
-        loadPhotos(1);
-    });
+    if (userProfile && profileDropdown) {
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            profileDropdown.classList.remove('show');
+        });
+    }
     
-    dom.photoOrientation.addEventListener('change', () => {
-        state.photoPage = 1;
-        dom.photosGrid.innerHTML = '';
-        loadPhotos(1);
-    });
+    // Load more buttons
+    const loadMorePhotos = document.getElementById('loadMorePhotos');
+    if (loadMorePhotos) {
+        loadMorePhotos.addEventListener('click', loadMorePhotosFunc);
+    }
     
-    dom.videoSort.addEventListener('change', () => {
-        state.videoPage = 1;
-        dom.videosGrid.innerHTML = '';
-        loadVideos(1);
-    });
+    const loadMoreVideos = document.getElementById('loadMoreVideos');
+    if (loadMoreVideos) {
+        loadMoreVideos.addEventListener('click', loadMoreVideosFunc);
+    }
     
-    dom.videoDuration.addEventListener('change', () => {
-        state.videoPage = 1;
-        dom.videosGrid.innerHTML = '';
-        loadVideos(1);
-    });
-    
-    dom.wallpaperSort.addEventListener('change', () => {
-        state.wallpaperPage = 1;
-        dom.wallpapersGrid.innerHTML = '';
-        loadWallpapers(1);
-    });
-    
-    dom.wallpaperCategory.addEventListener('change', () => {
-        state.wallpaperPage = 1;
-        dom.wallpapersGrid.innerHTML = '';
-        loadWallpapers(1);
-    });
+    const loadMoreWallpapers = document.getElementById('loadMoreWallpapers');
+    if (loadMoreWallpapers) {
+        loadMoreWallpapers.addEventListener('click', loadMoreWallpapersFunc);
+    }
     
     // AI Generator
-    dom.generateAI.addEventListener('click', async () => {
-        if (!state.currentUser) {
-            showAuthModal();
-            showToast('Please login to generate AI images', 'info');
-            return;
-        }
-        
-        try {
-            await generateAI();
-        } catch (error) {
-            console.error('AI Generation failed:', error);
-            showToast('Failed to generate image. Please try again.', 'error');
-        }
-    });
-    
-    // Collections
-    dom.createCollectionBtn.addEventListener('click', showCreateCollectionModal);
-    dom.createFirstCollection.addEventListener('click', showCreateCollectionModal);
-    dom.createNewCollectionBtn.addEventListener('click', showCreateCollectionModal);
-    
-    // Collection Modals
-    dom.closeCollectionModal.addEventListener('click', () => {
-        dom.collectionModal.classList.remove('active');
-        document.body.classList.remove('modal-open');
-    });
-    
-    dom.closeCreateCollectionModal.addEventListener('click', () => {
-        dom.createCollectionModal.classList.remove('active');
-        document.body.classList.remove('modal-open');
-    });
-    
-    // Create Collection Form
-    dom.createCollectionForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await handleCreateCollection();
-    });
-    
-    // Media Modal
-    dom.modalCloseBtn.addEventListener('click', closeMediaModal);
-    dom.modalLikeBtn.addEventListener('click', toggleLike);
-    dom.modalDownloadBtn.addEventListener('click', downloadMedia);
-    dom.modalCollectionBtn.addEventListener('click', showAddToCollectionModal);
-    
-    // Close modals on overlay click
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeAllModals();
-            }
-        });
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!dom.userProfile.contains(e.target) && !dom.profileDropdown.contains(e.target)) {
-            dom.profileDropdown.classList.remove('show');
-        }
-    });
-}
-
-// Load Initial Content
-async function loadInitialContent() {
-    try {
-        // Load trending content
-        await loadTrending();
-        
-        // Load categories
-        await loadCategories();
-        
-        // Load initial media
-        await loadPhotos(1);
-        await loadVideos(1);
-        await loadWallpapers(1);
-        
-        // Load user collections if logged in
-        if (state.currentUser) {
-            await loadUserCollections();
-        }
-        
-    } catch (error) {
-        console.error('Failed to load initial content:', error);
-        showToast('Failed to load content. Please refresh the page.', 'error');
+    const generateAI = document.getElementById('generateAI');
+    if (generateAI) {
+        generateAI.addEventListener('click', generateAIImage);
     }
+    
+    console.log("Event listeners setup complete");
 }
 
 // Switch View
 function switchView(view) {
-    // Update navigation
-    dom.navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${view}`) {
-            link.classList.add('active');
-        }
-    });
+    console.log("Switching to view:", view);
     
-    dom.mobileNavLinks.forEach(link => {
+    // Update navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === `#${view}`) {
             link.classList.add('active');
@@ -406,7 +133,8 @@ function switchView(view) {
     });
     
     // Update content tabs
-    dom.contentTabs.forEach(tab => {
+    const contentTabs = document.querySelectorAll('.content-tab');
+    contentTabs.forEach(tab => {
         tab.classList.remove('active');
         if (tab.getAttribute('data-tab') === view) {
             tab.classList.add('active');
@@ -414,7 +142,8 @@ function switchView(view) {
     });
     
     // Show corresponding section
-    dom.contentSections.forEach(section => {
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
         section.classList.remove('active');
         if (section.id === `${view}Section`) {
             section.classList.add('active');
@@ -422,365 +151,197 @@ function switchView(view) {
     });
     
     // Update state
-    state.currentView = view;
+    window.appState.currentView = view;
     
-    // Scroll to section
-    document.getElementById(`${view}Section`).scrollIntoView({
-        behavior: 'smooth'
+    // Load content for the view if needed
+    if (view === 'photos' && window.appState.photos.length === 0) {
+        loadPhotos();
+    } else if (view === 'videos' && window.appState.videos.length === 0) {
+        loadVideos();
+    } else if (view === 'wallpapers' && window.appState.wallpapers.length === 0) {
+        loadWallpapers();
+    }
+}
+
+// Perform Search
+function performSearch() {
+    const searchInput = document.getElementById('globalSearch');
+    if (!searchInput) return;
+    
+    const query = searchInput.value.trim();
+    if (!query) {
+        showToast('Please enter a search term', 'error');
+        return;
+    }
+    
+    console.log("Searching for:", query);
+    showToast(`Searching for "${query}"...`, 'info');
+    
+    // For now, just load photos with the search term
+    loadPhotos(query);
+}
+
+// Load Initial Content
+function loadInitialContent() {
+    console.log("Loading initial content...");
+    
+    // Load trending photos
+    loadPhotos('nature', 8);
+    
+    // Load categories
+    loadCategories();
+    
+    // Load some sample content for other sections
+    setTimeout(loadSampleVideos, 1000);
+    setTimeout(loadSampleWallpapers, 1500);
+}
+
+// Load Photos (Pexels API)
+function loadPhotos(query = 'nature', perPage = 12) {
+    if (window.appState.isLoading) return;
+    
+    window.appState.isLoading = true;
+    console.log("Loading photos...");
+    
+    // Your Pexels API Key
+    const apiKey = 'BaCBEeB2Y1gNaCYddJaRoFaVgCdDNhYu51qQe5JMUcPU56RMiJ5M3FOZ';
+    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&page=1`;
+    
+    fetch(url, {
+        headers: {
+            'Authorization': apiKey
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.appState.photos = data.photos || [];
+        displayPhotos(window.appState.photos);
+        window.appState.isLoading = false;
+        console.log("Photos loaded:", window.appState.photos.length);
+    })
+    .catch(error => {
+        console.error("Error loading photos:", error);
+        window.appState.isLoading = false;
+        
+        // Fallback to sample photos
+        loadSamplePhotos();
     });
 }
 
-// Handle Search
-async function handleSearch() {
-    const query = dom.globalSearch.value.trim();
-    if (!query) return;
+// Display Photos
+function displayPhotos(photos) {
+    const photosGrid = document.getElementById('photosGrid') || 
+                      document.getElementById('trendingGrid') || 
+                      document.querySelector('.masonry-grid');
     
-    try {
-        state.isLoading = true;
-        
-        // Clear current grids
-        dom.photosGrid.innerHTML = '';
-        dom.videosGrid.innerHTML = '';
-        dom.wallpapersGrid.innerHTML = '';
-        
-        // Reset pagination
-        state.photoPage = 1;
-        state.videoPage = 1;
-        state.wallpaperPage = 1;
-        
-        // Search across all media types
-        await Promise.all([
-            searchMedia('photos', query, 1),
-            searchMedia('videos', query, 1),
-            searchMedia('wallpapers', query, 1)
-        ]);
-        
-        // Switch to photos tab (or first tab with results)
-        switchView('photos');
-        
-        showToast(`Search results for "${query}"`, 'info');
-        
-    } catch (error) {
-        console.error('Search failed:', error);
-        showToast('Search failed. Please try again.', 'error');
-    } finally {
-        state.isLoading = false;
-    }
-}
-
-// Toggle Profile Dropdown
-function toggleProfileDropdown() {
-    if (!state.currentUser) {
-        showAuthModal();
-        return;
-    }
+    if (!photosGrid) return;
     
-    dom.profileDropdown.classList.toggle('show');
-}
-
-// Handle Logout
-async function handleLogout() {
-    try {
-        await signOut(auth);
-        state.currentUser = null;
-        state.userProfile = null;
-        
-        // Update UI
-        dom.profileAvatar.innerHTML = '<i class="fas fa-user"></i>';
-        dom.profileName.textContent = 'Guest';
-        dom.profileDropdown.classList.remove('show');
-        
-        // Clear user data
-        state.collections = [];
-        state.favorites = [];
-        state.downloads = [];
-        
-        // Update collections UI
-        updateCollectionsUI();
-        
-        showToast('Logged out successfully', 'success');
-        
-    } catch (error) {
-        console.error('Logout failed:', error);
-        showToast('Logout failed. Please try again.', 'error');
-    }
-}
-
-// Show Create Collection Modal
-function showCreateCollectionModal() {
-    if (!state.currentUser) {
-        showAuthModal();
-        showToast('Please login to create collections', 'info');
-        return;
-    }
+    // Clear grid
+    photosGrid.innerHTML = '';
     
-    dom.collectionName.value = '';
-    dom.collectionDescription.value = '';
-    dom.createCollectionModal.classList.add('active');
-    document.body.classList.add('modal-open');
+    // Add photos to grid
+    photos.forEach(photo => {
+        const photoCard = createPhotoCard(photo);
+        photosGrid.appendChild(photoCard);
+    });
 }
 
-// Handle Create Collection
-async function handleCreateCollection() {
-    try {
-        const name = dom.collectionName.value.trim();
-        const description = dom.collectionDescription.value.trim();
-        const visibility = document.querySelector('input[name="visibility"]:checked').value;
-        
-        if (!name) {
-            showToast('Collection name is required', 'error');
-            return;
-        }
-        
-        const collectionData = {
-            name,
-            description,
-            visibility,
-            userId: state.currentUser.uid,
-            createdAt: serverTimestamp(),
-            itemCount: 0,
-            previewImages: []
-        };
-        
-        const collectionRef = await addDoc(collection(db, 'collections'), collectionData);
-        
-        // Add to local state
-        state.collections.push({
-            id: collectionRef.id,
-            ...collectionData
-        });
-        
-        // Update UI
-        updateCollectionsUI();
-        
-        // Close modal
-        dom.createCollectionModal.classList.remove('active');
-        document.body.classList.remove('modal-open');
-        
-        showToast('Collection created successfully', 'success');
-        
-    } catch (error) {
-        console.error('Failed to create collection:', error);
-        showToast('Failed to create collection. Please try again.', 'error');
-    }
-}
-
-// Show Add to Collection Modal
-async function showAddToCollectionModal() {
-    if (!state.currentUser) {
-        showAuthModal();
-        showToast('Please login to save to collections', 'info');
-        return;
-    }
+// Create Photo Card
+function createPhotoCard(photo) {
+    const card = document.createElement('div');
+    card.className = 'media-card masonry-item';
     
-    if (!state.currentMedia) return;
-    
-    try {
-        // Load user collections
-        await loadUserCollections();
-        
-        // Clear and populate collection list
-        dom.collectionList.innerHTML = '';
-        
-        if (state.collections.length === 0) {
-            dom.collectionList.innerHTML = `
-                <div class="empty-collections">
-                    <p>No collections found. Create one first!</p>
-                </div>
-            `;
-        } else {
-            state.collections.forEach(collection => {
-                const collectionItem = document.createElement('div');
-                collectionItem.className = 'collection-item';
-                collectionItem.innerHTML = `
-                    <input type="checkbox" id="collection-${collection.id}" class="collection-checkbox">
-                    <label for="collection-${collection.id}" class="collection-label">
-                        <i class="fas fa-bookmark"></i>
-                        <div>
-                            <div class="collection-name">${collection.name}</div>
-                            <div class="collection-count-small">${collection.itemCount} items</div>
-                        </div>
-                    </label>
-                `;
-                
-                // Check if media is already in collection
-                const checkbox = collectionItem.querySelector('.collection-checkbox');
-                checkbox.checked = collection.items?.some(item => item.mediaId === state.currentMedia.id) || false;
-                
-                checkbox.addEventListener('change', async (e) => {
-                    if (e.target.checked) {
-                        await addToCollection(collection.id, state.currentMedia);
-                    } else {
-                        await removeFromCollection(collection.id, state.currentMedia.id);
-                    }
-                });
-                
-                dom.collectionList.appendChild(collectionItem);
-            });
-        }
-        
-        dom.collectionModal.classList.add('active');
-        document.body.classList.add('modal-open');
-        
-    } catch (error) {
-        console.error('Failed to load collections:', error);
-        showToast('Failed to load collections. Please try again.', 'error');
-    }
-}
-
-// Update Collections UI
-function updateCollectionsUI() {
-    if (!state.currentUser || state.collections.length === 0) {
-        dom.collectionsGrid.innerHTML = `
-            <div class="empty-collections">
-                <i class="fas fa-bookmark"></i>
-                <h3>No Collections Yet</h3>
-                <p>Create your first collection to save your favorite content</p>
-                <button class="btn btn-primary" id="createFirstCollection">
-                    Create Collection
+    card.innerHTML = `
+        <img src="${photo.src.medium}" alt="${photo.photographer}" loading="lazy">
+        <div class="media-overlay">
+            <div class="media-actions">
+                <button class="media-action-btn view-btn" onclick="viewPhoto('${photo.id}')">
+                    <i class="fas fa-expand"></i> View
+                </button>
+                <button class="media-action-btn like-btn" onclick="likePhoto('${photo.id}')">
+                    <i class="far fa-heart"></i> Like
+                </button>
+                <button class="media-action-btn download-btn" onclick="downloadPhoto('${photo.src.original}', '${photo.id}')">
+                    <i class="fas fa-download"></i> Download
                 </button>
             </div>
-        `;
-        
-        // Re-attach event listener
-        document.getElementById('createFirstCollection')?.addEventListener('click', showCreateCollectionModal);
-        return;
-    }
-    
-    dom.collectionsGrid.innerHTML = '';
-    
-    state.collections.forEach(collection => {
-        const collectionCard = document.createElement('div');
-        collectionCard.className = 'collection-card';
-        collectionCard.innerHTML = `
-            <div class="collection-header">
-                <div class="collection-title">
-                    <h4>${collection.name}</h4>
-                    <span class="collection-count">${collection.itemCount} items</span>
+        </div>
+        <div class="media-info">
+            <div class="author-info">
+                <div class="author-avatar">
+                    <i class="fas fa-user"></i>
                 </div>
-                <p class="collection-description">${collection.description || 'No description'}</p>
+                <div class="author-name">${photo.photographer}</div>
             </div>
-            <div class="collection-preview">
-                ${collection.previewImages.slice(0, 3).map(img => 
-                    `<img src="${img}" alt="Preview">`
-                ).join('')}
-                ${collection.previewImages.length < 3 ? 
-                    Array(3 - collection.previewImages.length).fill('<div class="empty-preview"></div>').join('') : ''
-                }
+            <div class="media-stats">
+                <i class="far fa-heart"></i> ${photo.likes || Math.floor(Math.random() * 100)}
             </div>
-            <div class="collection-footer">
-                <span class="collection-visibility">
-                    <i class="fas fa-${collection.visibility === 'public' ? 'globe' : 'lock'}"></i>
-                    ${collection.visibility}
-                </span>
-                <div class="collection-actions">
-                    <button class="collection-action-btn" data-action="view" data-id="${collection.id}">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="collection-action-btn" data-action="edit" data-id="${collection.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="collection-action-btn" data-action="delete" data-id="${collection.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        dom.collectionsGrid.appendChild(collectionCard);
-    });
+        </div>
+    `;
+    
+    return card;
 }
 
-// Toggle Like
-async function toggleLike() {
-    if (!state.currentUser) {
-        showAuthModal();
-        showToast('Please login to like content', 'info');
-        return;
-    }
-    
-    if (!state.currentMedia) return;
-    
-    try {
-        const isLiked = dom.modalLikeBtn.classList.contains('liked');
-        
-        if (isLiked) {
-            // Remove from favorites
-            await removeFromFavorites(state.currentMedia.id);
-            dom.modalLikeBtn.classList.remove('liked');
-            showToast('Removed from favorites', 'info');
-        } else {
-            // Add to favorites
-            await addToFavorites(state.currentMedia);
-            dom.modalLikeBtn.classList.add('liked');
-            showToast('Added to favorites', 'success');
+// Load Sample Photos (Fallback)
+function loadSamplePhotos() {
+    const samplePhotos = [
+        {
+            id: '1',
+            src: {
+                medium: 'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=600',
+                original: 'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg'
+            },
+            photographer: 'Nature Photographer',
+            likes: 245
+        },
+        {
+            id: '2',
+            src: {
+                medium: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600',
+                original: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
+            },
+            photographer: 'Portrait Artist',
+            likes: 189
+        },
+        {
+            id: '3',
+            src: {
+                medium: 'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=600',
+                original: 'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg'
+            },
+            photographer: 'Tech Vision',
+            likes: 312
+        },
+        {
+            id: '4',
+            src: {
+                medium: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600',
+                original: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg'
+            },
+            photographer: 'Travel Enthusiast',
+            likes: 156
         }
-        
-    } catch (error) {
-        console.error('Failed to toggle like:', error);
-        showToast('Failed to update favorites. Please try again.', 'error');
-    }
-}
-
-// Download Media
-async function downloadMedia() {
-    if (!state.currentMedia) return;
+    ];
     
-    try {
-        // Track download in user history
-        if (state.currentUser) {
-            await addToDownloads(state.currentMedia);
-        }
-        
-        // Create download link
-        const link = document.createElement('a');
-        link.href = state.currentMedia.downloadUrl || state.currentMedia.url;
-        link.download = `quizontal-${state.currentMedia.id}.${state.currentMedia.type === 'video' ? 'mp4' : 'jpg'}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showToast('Download started', 'success');
-        
-    } catch (error) {
-        console.error('Download failed:', error);
-        showToast('Download failed. Please try again.', 'error');
-    }
-}
-
-// Close Media Modal
-function closeMediaModal() {
-    dom.mediaModal.classList.remove('active');
-    document.body.classList.remove('modal-open');
-    
-    // Reset modal content
-    dom.modalImage.src = '';
-    dom.modalVideo.src = '';
-    state.currentMedia = null;
-}
-
-// Close All Modals
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('active');
-    });
-    document.body.classList.remove('modal-open');
+    window.appState.photos = samplePhotos;
+    displayPhotos(samplePhotos);
 }
 
 // Load Categories
-async function loadCategories() {
+function loadCategories() {
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    if (!categoriesGrid) return;
+    
     const categories = [
-        { name: 'Nature', query: 'nature', image: 'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'People', query: 'people', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Technology', query: 'technology', image: 'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Travel', query: 'travel', image: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Animals', query: 'animals', image: 'https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Food', query: 'food', image: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Sports', query: 'sports', image: 'https://images.pexels.com/photos/248547/pexels-photo-248547.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { name: 'Abstract', query: 'abstract', image: 'https://images.pexels.com/photos/1025469/pexels-photo-1025469.jpeg?auto=compress&cs=tinysrgb&w=600' }
+        { name: 'Nature', image: 'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'nature' },
+        { name: 'People', image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'people' },
+        { name: 'Technology', image: 'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'technology' },
+        { name: 'Travel', image: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'travel' },
+        { name: 'Animals', image: 'https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'animals' },
+        { name: 'Food', image: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=600', query: 'food' }
     ];
     
-    dom.categoriesGrid.innerHTML = '';
+    categoriesGrid.innerHTML = '';
     
     categories.forEach(category => {
         const categoryCard = document.createElement('div');
@@ -793,211 +354,221 @@ async function loadCategories() {
             </div>
         `;
         
-        categoryCard.addEventListener('click', () => {
-            dom.globalSearch.value = category.query;
-            handleSearch();
+        categoryCard.addEventListener('click', function() {
+            const searchInput = document.getElementById('globalSearch');
+            if (searchInput) {
+                searchInput.value = category.query;
+                performSearch();
+            }
         });
         
-        dom.categoriesGrid.appendChild(categoryCard);
+        categoriesGrid.appendChild(categoryCard);
     });
 }
 
-// Update User Profile UI
-function updateUserProfileUI(user) {
-    if (user) {
-        // Update avatar
-        if (user.photoURL) {
-            dom.profileAvatar.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName}">`;
-        } else {
-            dom.profileAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+// Load Sample Videos
+function loadSampleVideos() {
+    const videosGrid = document.getElementById('videosGrid');
+    if (!videosGrid) return;
+    
+    videosGrid.innerHTML = `
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="https://images.pexels.com/videos/855029/pexels-photo-855029.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Sample Video">
+                <button class="video-play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <div class="video-duration">0:30</div>
+            </div>
+            <div class="video-info">
+                <h4>Nature Scene</h4>
+                <p>Beautiful nature scenery</p>
+            </div>
+        </div>
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="https://images.pexels.com/videos/855082/pexels-photo-855082.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Sample Video">
+                <button class="video-play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <div class="video-duration">0:45</div>
+            </div>
+            <div class="video-info">
+                <h4>City Time-lapse</h4>
+                <p>City lights at night</p>
+            </div>
+        </div>
+    `;
+}
+
+// Load Sample Wallpapers
+function loadSampleWallpapers() {
+    const wallpapersGrid = document.getElementById('wallpapersGrid');
+    if (!wallpapersGrid) return;
+    
+    wallpapersGrid.innerHTML = `
+        <div class="wallpaper-card">
+            <img src="https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Wallpaper" class="wallpaper-image">
+            <div class="wallpaper-resolution">1920x1080</div>
+        </div>
+        <div class="wallpaper-card">
+            <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Wallpaper" class="wallpaper-image">
+            <div class="wallpaper-resolution">3840x2160</div>
+        </div>
+    `;
+}
+
+// Load More Photos
+function loadMorePhotosFunc() {
+    showToast('Loading more photos...', 'info');
+    setTimeout(() => {
+        loadPhotos('landscape', 8);
+    }, 1000);
+}
+
+// Load More Videos
+function loadMoreVideosFunc() {
+    showToast('Loading more videos...', 'info');
+}
+
+// Load More Wallpapers
+function loadMoreWallpapersFunc() {
+    showToast('Loading more wallpapers...', 'info');
+}
+
+// Generate AI Image
+function generateAIImage() {
+    const promptInput = document.getElementById('aiPrompt');
+    if (!promptInput) {
+        showToast('AI Generator not available', 'error');
+        return;
+    }
+    
+    const prompt = promptInput.value.trim();
+    if (!prompt) {
+        showToast('Please enter a prompt for AI generation', 'error');
+        return;
+    }
+    
+    showToast('Generating AI image... This may take a moment.', 'info');
+    
+    // For now, show a sample AI image
+    setTimeout(() => {
+        const aiGrid = document.getElementById('aiGrid');
+        if (aiGrid) {
+            const aiCard = document.createElement('div');
+            aiCard.className = 'ai-image-card';
+            aiCard.innerHTML = `
+                <div class="ai-image-container">
+                    <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="AI Generated">
+                    <div class="ai-image-overlay">
+                        <div class="ai-image-actions">
+                            <button class="ai-action-btn" onclick="viewAIImage(this)">
+                                <i class="fas fa-expand"></i> View
+                            </button>
+                            <button class="ai-action-btn" onclick="downloadAIImage(this)">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-image-info">
+                    <div class="ai-prompt-preview">${prompt.substring(0, 100)}...</div>
+                    <div class="ai-image-meta">
+                        <span>AI Generated</span>
+                        <span>${new Date().toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `;
+            aiGrid.appendChild(aiCard);
+            
+            // Clear empty state if present
+            const emptyState = aiGrid.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            showToast('AI image generated successfully!', 'success');
         }
-        
-        // Update name
-        dom.profileName.textContent = user.displayName || 'User';
-        
-        // Update dropdown
-        const dropdownAvatar = dom.profileDropdown.querySelector('#dropdownAvatar');
-        const dropdownName = dom.profileDropdown.querySelector('#dropdownName');
-        const dropdownEmail = dom.profileDropdown.querySelector('#dropdownEmail');
-        
-        if (user.photoURL) {
-            dropdownAvatar.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName}">`;
-        } else {
-            dropdownAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+    }, 2000);
+}
+
+// View Photo
+function viewPhoto(photoId) {
+    showToast('Opening photo viewer...', 'info');
+    // Implement photo viewer modal
+}
+
+// Like Photo
+function likePhoto(photoId) {
+    if (!window.authState || !window.authState.isAuthenticated) {
+        showToast('Please login to like photos', 'error');
+        return;
+    }
+    
+    showToast('Photo liked!', 'success');
+}
+
+// Download Photo
+function downloadPhoto(url, photoId) {
+    showToast('Starting download...', 'info');
+    
+    // Create temporary link for download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `quizontal-photo-${photoId}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Track download if user is logged in
+    if (window.authState && window.authState.isAuthenticated) {
+        console.log("Download tracked for user:", window.authState.currentUser.email);
+    }
+}
+
+// Hide Loading Screen
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        console.log("Loading screen hidden");
+    }
+}
+
+// Show Toast Notification (from auth.js but available here too)
+window.showToast = function(message, type = 'info') {
+    // Use auth.js showToast if available, otherwise create simple one
+    if (typeof showToast === 'function') {
+        showToast(message, type);
+        return;
+    }
+    
+    // Simple toast implementation
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
         }
-        
-        dropdownName.textContent = user.displayName || 'User';
-        dropdownEmail.textContent = user.email || '';
-        
-    } else {
-        // Reset to guest state
-        dom.profileAvatar.innerHTML = '<i class="fas fa-user"></i>';
-        dom.profileName.textContent = 'Guest';
-        
-        const dropdownAvatar = dom.profileDropdown.querySelector('#dropdownAvatar');
-        const dropdownName = dom.profileDropdown.querySelector('#dropdownName');
-        const dropdownEmail = dom.profileDropdown.querySelector('#dropdownEmail');
-        
-        dropdownAvatar.innerHTML = '<i class="fas fa-user"></i>';
-        dropdownName.textContent = 'Guest';
-        dropdownEmail.textContent = 'Please login';
-    }
-}
+    }, 3000);
+};
 
-// Add to Favorites
-async function addToFavorites(media) {
-    try {
-        const favoriteRef = await addDoc(collection(db, 'favorites'), {
-            userId: state.currentUser.uid,
-            mediaId: media.id,
-            mediaType: media.type,
-            mediaData: media,
-            createdAt: serverTimestamp()
-        });
-        
-        state.favorites.push({
-            id: favoriteRef.id,
-            ...media
-        });
-        
-    } catch (error) {
-        console.error('Failed to add to favorites:', error);
-        throw error;
-    }
-}
-
-// Remove from Favorites
-async function removeFromFavorites(mediaId) {
-    try {
-        const favoriteQuery = query(
-            collection(db, 'favorites'),
-            where('userId', '==', state.currentUser.uid),
-            where('mediaId', '==', mediaId)
-        );
-        
-        const favoriteSnapshot = await getDocs(favoriteQuery);
-        
-        favoriteSnapshot.forEach(async (doc) => {
-            await deleteDoc(doc.ref);
-        });
-        
-        state.favorites = state.favorites.filter(fav => fav.id !== mediaId);
-        
-    } catch (error) {
-        console.error('Failed to remove from favorites:', error);
-        throw error;
-    }
-}
-
-// Add to Downloads
-async function addToDownloads(media) {
-    try {
-        await addDoc(collection(db, 'downloads'), {
-            userId: state.currentUser.uid,
-            mediaId: media.id,
-            mediaType: media.type,
-            mediaData: media,
-            downloadedAt: serverTimestamp()
-        });
-        
-    } catch (error) {
-        console.error('Failed to track download:', error);
-    }
-}
-
-// Load User Collections
-async function loadUserCollections() {
-    if (!state.currentUser) return;
-    
-    try {
-        const collectionsQuery = query(
-            collection(db, 'collections'),
-            where('userId', '==', state.currentUser.uid)
-        );
-        
-        const collectionsSnapshot = await getDocs(collectionsQuery);
-        
-        state.collections = [];
-        collectionsSnapshot.forEach(doc => {
-            state.collections.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
-        
-        updateCollectionsUI();
-        
-    } catch (error) {
-        console.error('Failed to load collections:', error);
-        throw error;
-    }
-}
-
-// Show Media in Modal
-function showMediaModal(media, type) {
-    state.currentMedia = { ...media, type };
-    
-    if (type === 'video') {
-        dom.modalImage.style.display = 'none';
-        dom.modalVideo.style.display = 'block';
-        dom.modalVideo.src = media.video_files?.[0]?.link || media.url;
-        dom.modalVideo.load();
-    } else {
-        dom.modalImage.style.display = 'block';
-        dom.modalVideo.style.display = 'none';
-        dom.modalImage.src = media.src?.large || media.url;
-    }
-    
-    dom.modalTitle.textContent = media.photographer || media.user?.name || 'Unknown';
-    dom.modalAuthorName.textContent = media.photographer || media.user?.name || 'Unknown';
-    dom.modalStats.textContent = `${media.likes || 0} likes • ${media.downloads || 0} downloads`;
-    
-    // Set avatar
-    if (media.user?.url) {
-        dom.modalAuthorAvatar.innerHTML = `<img src="${media.user.url}" alt="${media.user.name}">`;
-    } else {
-        dom.modalAuthorAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-    }
-    
-    // Set tags
-    dom.modalTags.innerHTML = '';
-    if (media.tags) {
-        media.tags.forEach(tag => {
-            const tagElement = document.createElement('span');
-            tagElement.className = 'media-tag';
-            tagElement.textContent = `#${tag}`;
-            tagElement.addEventListener('click', () => {
-                dom.globalSearch.value = tag;
-                handleSearch();
-            });
-            dom.modalTags.appendChild(tagElement);
-        });
-    }
-    
-    // Check if liked
-    const isLiked = state.favorites.some(fav => fav.id === media.id);
-    if (isLiked) {
-        dom.modalLikeBtn.classList.add('liked');
-    } else {
-        dom.modalLikeBtn.classList.remove('liked');
-    }
-    
-    dom.mediaModal.classList.add('active');
-    document.body.classList.add('modal-open');
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize app when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing app...");
     initApp();
 });
-
-// Export for other modules
-export {
-    dom,
-    state,
-    showMediaModal,
-    closeMediaModal,
-    updateUserProfileUI,
-    switchView,
-    showToast
-};
