@@ -1,836 +1,1219 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizontal | Free Stock Media & AI Art</title>
+<!doctype html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Quizontal - High-Quality Wallpapers, Stock Photos & AI Images</title>
+  <meta name="description" content="Discover millions of high-quality wallpapers, stock photos, videos, and AI-generated images. Fast search, easy downloads, and powerful AI tools for creators.">
+  <link rel="canonical" href="https://example.com">
+  <meta property="og:title" content="Quizontal - High-Quality Wallpapers, Stock Photos & AI Images">
+  <meta property="og:description" content="Discover millions of high-quality wallpapers, stock photos, videos, and AI-generated images. Fast search, easy downloads, and powerful AI tools for creators.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com">
+  <meta property="og:image" content="https://example.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Quizontal - High-Quality Wallpapers, Stock Photos & AI Images">
+  <meta name="twitter:description" content="Discover millions of high-quality wallpapers, stock photos, videos, and AI-generated images. Fast search, easy downloads, and powerful AI tools for creators.">
+  <meta name="twitter:image" content="https://example.com/og-image.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Custom styles for animations and layout */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     
-    <!-- Meta Tags -->
-    <meta name="description" content="Millions of free stock photos, HD videos, wallpapers, and AI-generated art. Download high-quality royalty-free content for commercial and personal use.">
-    <meta name="keywords" content="free stock photos, HD videos, wallpapers, AI art, royalty-free images">
+    body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="Quizontal | Free Stock Media & AI Art">
-    <meta property="og:description" content="Download millions of free stock photos, HD videos, wallpapers, and create AI art - completely free!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead">
-    <meta property="og:url" content="https://quizontal.com">
-    <meta property="og:type" content="website">
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    /* Animation classes */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    .fade-in-up.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    .fade-in-left {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    .fade-in-left.animated {
+      opacity: 1;
+      transform: translateX(0);
+    }
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
     
+    .fade-in-right.animated {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .scale-in.animated {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .rotate-in {
+      opacity: 0;
+      transform: rotate(-5deg) scale(0.95);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .rotate-in.animated {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+    
+    /* Video background */
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, rgba(76, 29, 149, 0.85), rgba(30, 58, 138, 0.85), rgba(49, 46, 129, 0.85));
+      z-index: 1;
+    }
+    
+    /* Enhanced navigation */
+    .nav-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      padding: 20px;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .nav-item:hover .nav-dropdown {
+      display: block;
+    }
+    
+    .mobile-nav-dropdown {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    
+    .mobile-nav-dropdown.active {
+      max-height: 500px;
+    }
+    
+    /* Gallery styles */
+    .trending-card-left, .trending-card-right {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+    
+    .trending-card-left {
+      transform-origin: left center;
+    }
+    
+    .trending-card-right {
+      transform-origin: right center;
+    }
+    
+    /* Staggered animations */
+    .stagger-animation > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    /* Mobile menu fix */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      z-index: 9999;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+    
+    /* Layout fixes */
+    .content-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      width: 100%;
+    }
+    
+    /* Section spacing */
+    section {
+      padding: 5rem 0;
+    }
+    
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    /* Hover effects */
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #8b5cf6, #6366f1);
+      border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, #7c3aed, #4f46e5);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      section {
+        padding: 3rem 0;
+      }
+      
+      .content-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      
+      .nav-dropdown {
+        width: 300px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      section {
+        padding: 2rem 0;
+      }
+      
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <p>Loading Quizontal...</p>
-    </div>
+<body class="bg-white w-screen overflow-x-hidden">
 
-    <!-- Auth Modals -->
-    <div class="modal" id="authModal">
-        <div class="modal-content auth-modal">
-            <div class="modal-header">
-                <h2 id="authModalTitle">Welcome to Quizontal</h2>
-                <button class="modal-close" id="closeAuthModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Login</button>
-                    <button class="auth-tab" data-tab="signup">Sign Up</button>
-                </div>
-                
-                <div class="auth-content">
-                    <!-- Login Form -->
-                    <form id="loginForm" class="auth-form active">
-                        <div class="form-group">
-                            <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Password</label>
-                            <div class="password-input">
-                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                                <button type="button" class="toggle-password">
-                                    <i class="far fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
-                            <span class="btn-text">Login</span>
-                            <div class="btn-loading" style="display: none;">
-                                <div class="loading-spinner-small"></div>
-                            </div>
-                        </button>
-                        
-                        <div class="divider">
-                            <span>or continue with</span>
-                        </div>
-                        
-                        <div class="social-auth">
-                            <button type="button" class="social-btn google-btn" id="googleLogin">
-                                <i class="fab fa-google"></i> Google
-                            </button>
-                            <button type="button" class="social-btn github-btn" id="githubLogin">
-                                <i class="fab fa-github"></i> GitHub
-                            </button>
-                        </div>
-                        
-                        <p class="auth-link">
-                            Don't have an account? <a href="#" class="switch-to-signup">Sign up</a>
-                        </p>
-                    </form>
-                    
-                    <!-- Signup Form -->
-                    <form id="signupForm" class="auth-form">
-                        <div class="form-group">
-                            <label for="signupName">Full Name</label>
-                            <input type="text" id="signupName" placeholder="Enter your full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupEmail">Email</label>
-                            <input type="email" id="signupEmail" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupPassword">Password</label>
-                            <div class="password-input">
-                                <input type="password" id="signupPassword" placeholder="Create a password (min. 6 characters)" required minlength="6">
-                                <button type="button" class="toggle-password">
-                                    <i class="far fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupAvatar">Profile Picture (Optional)</label>
-                            <div class="avatar-upload">
-                                <div class="avatar-preview" id="avatarPreview">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <input type="file" id="signupAvatar" accept="image/*" class="avatar-input">
-                                <label for="signupAvatar" class="avatar-label">Choose Image</label>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full" id="signupBtn">
-                            <span class="btn-text">Create Account</span>
-                            <div class="btn-loading" style="display: none;">
-                                <div class="loading-spinner-small"></div>
-                            </div>
-                        </button>
-                        
-                        <div class="divider">
-                            <span>or sign up with</span>
-                        </div>
-                        
-                        <div class="social-auth">
-                            <button type="button" class="social-btn google-btn" id="googleSignup">
-                                <i class="fab fa-google"></i> Google
-                            </button>
-                            <button type="button" class="social-btn github-btn" id="githubSignup">
-                                <i class="fab fa-github"></i> GitHub
-                            </button>
-                        </div>
-                        
-                        <p class="auth-link">
-                            Already have an account? <a href="#" class="switch-to-login">Login</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
+  <!-- Enhanced Navigation -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 w-full shadow-sm">
+    <div class="content-container">
+      <div class="flex justify-between items-center h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl md:text-3xl font-bold text-purple-600">Quizontal</span>
+          </div>
         </div>
-    </div>
-
-    <!-- Profile Dropdown -->
-    <div class="profile-dropdown" id="profileDropdown">
-        <div class="profile-header">
-            <div class="profile-avatar-small">
-                <img id="dropdownAvatar" src="" alt="Profile">
-                <div class="online-status"></div>
-            </div>
-            <div class="profile-info">
-                <h4 id="dropdownName">Loading...</h4>
-                <p id="dropdownEmail">Loading...</p>
-            </div>
-        </div>
-        <div class="dropdown-divider"></div>
-        <a href="#account" class="dropdown-item">
-            <i class="fas fa-user"></i> My Account
-        </a>
-        <a href="#collections" class="dropdown-item">
-            <i class="fas fa-bookmark"></i> My Collections
-        </a>
-        <a href="#downloads" class="dropdown-item">
-            <i class="fas fa-download"></i> Downloads
-        </a>
-        <a href="#favorites" class="dropdown-item">
-            <i class="fas fa-heart"></i> Favorites
-        </a>
-        <a href="#settings" class="dropdown-item">
-            <i class="fas fa-cog"></i> Settings
-        </a>
-        <div class="dropdown-divider"></div>
-        <button class="dropdown-item logout-btn" id="logoutBtn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-    </div>
-
-    <!-- Main Header -->
-    <header class="main-header">
-        <nav class="navbar">
-            <div class="container">
-                <!-- Logo -->
-                <a href="/" class="logo">
-                    <i class="fas fa-palette"></i>
-                    <span>Quizontal</span>
-                </a>
-
-                <!-- Main Navigation -->
-                <div class="nav-menu">
-                    <a href="#home" class="nav-link active">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                    <a href="#photos" class="nav-link">
-                        <i class="fas fa-image"></i> Photos
-                    </a>
-                    <a href="#videos" class="nav-link">
-                        <i class="fas fa-video"></i> Videos
-                    </a>
-                    <a href="#wallpapers" class="nav-link">
-                        <i class="fas fa-desktop"></i> Wallpapers
-                    </a>
-                    <a href="#ai" class="nav-link">
-                        <i class="fas fa-robot"></i> AI Generator
-                    </a>
-                    <a href="#collections" class="nav-link">
-                        <i class="fas fa-bookmark"></i> Collections
-                    </a>
+        
+        <!-- Desktop Navigation with Dropdowns -->
+        <nav class="hidden lg:flex items-center space-x-1">
+          <div class="nav-item relative">
+            <a href="#" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium flex items-center gap-1 group">
+              <span>Images</span>
+              <i data-lucide="chevron-down" class="h-4 w-4 transition-transform group-hover:rotate-180"></i>
+            </a>
+            <div class="nav-dropdown">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 class="font-semibold text-gray-900 mb-3">Categories</h4>
+                  <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Nature</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Abstract</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Business</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Technology</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Travel</a></li>
+                  </ul>
                 </div>
-
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="globalSearch" placeholder="Search millions of free images...">
-                    <button class="search-btn" id="globalSearchBtn">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <div>
+                  <h4 class="font-semibold text-gray-900 mb-3">Popular</h4>
+                  <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Wallpapers</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Stock Photos</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">AI Generated</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Vectors</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Illustrations</a></li>
+                  </ul>
                 </div>
-
-                <!-- User Actions -->
-                <div class="user-actions">
-                    <button class="action-btn upload-btn" id="uploadBtn">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
-                    </button>
-                    
-                    <!-- User Profile -->
-                    <div class="user-profile" id="userProfile">
-                        <div class="profile-avatar" id="profileAvatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <span class="profile-name" id="profileName">Guest</span>
-                        <i class="fas fa-chevron-down profile-arrow"></i>
-                    </div>
-
-                    <!-- Mobile Menu Button -->
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+              </div>
             </div>
+          </div>
+          
+          <div class="nav-item relative">
+            <a href="#" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium flex items-center gap-1 group">
+              <span>Videos</span>
+              <i data-lucide="chevron-down" class="h-4 w-4 transition-transform group-hover:rotate-180"></i>
+            </a>
+            <div class="nav-dropdown">
+              <h4 class="font-semibold text-gray-900 mb-3">Video Content</h4>
+              <ul class="space-y-2">
+                <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Stock Videos</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Motion Graphics</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">4K Videos</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">Background Videos</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-purple-600 text-sm">AI Video Generation</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <a href="#ai-tools" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium">AI Generator</a>
+          <a href="#pricing" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium">Pricing</a>
+          <a href="#gallery" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium">Gallery</a>
+          <a href="#testimonials" class="text-gray-700 hover:text-purple-600 px-4 py-3 text-sm font-medium">Testimonials</a>
         </nav>
-
-        <!-- Mobile Navigation -->
-        <div class="mobile-nav" id="mobileNav">
-            <div class="mobile-nav-header">
-                <div class="logo">
-                    <i class="fas fa-palette"></i>
-                    <span>Quizontal</span>
-                </div>
-                <button class="mobile-close-btn" id="mobileCloseBtn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="mobile-nav-links">
-                <a href="#home" class="mobile-nav-link active">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="#photos" class="mobile-nav-link">
-                    <i class="fas fa-image"></i> Photos
-                </a>
-                <a href="#videos" class="mobile-nav-link">
-                    <i class="fas fa-video"></i> Videos
-                </a>
-                <a href="#wallpapers" class="mobile-nav-link">
-                    <i class="fas fa-desktop"></i> Wallpapers
-                </a>
-                <a href="#ai" class="mobile-nav-link">
-                    <i class="fas fa-robot"></i> AI Generator
-                </a>
-                <a href="#collections" class="mobile-nav-link">
-                    <i class="fas fa-bookmark"></i> Collections
-                </a>
-                <div class="mobile-nav-divider"></div>
-                <a href="#account" class="mobile-nav-link">
-                    <i class="fas fa-user"></i> My Account
-                </a>
-                <a href="#downloads" class="mobile-nav-link">
-                    <i class="fas fa-download"></i> Downloads
-                </a>
-                <a href="#favorites" class="mobile-nav-link">
-                    <i class="fas fa-heart"></i> Favorites
-                </a>
-                <a href="#settings" class="mobile-nav-link">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-                <button class="mobile-nav-link logout-btn" id="mobileLogoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
+        
+        <div class="flex items-center space-x-4">
+          <button class="hidden md:inline-flex bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-md hover:shadow-lg">
+            Get Started Free
+          </button>
+          <button id="openMobileMenu" class="lg:hidden p-2 text-gray-700">
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Hero Section -->
-        <section class="hero-section" id="home">
-            <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        Discover & Create<br>
-                        <span class="gradient-text">Stunning Visual Content</span>
-                    </h1>
-                    <p class="hero-description">
-                        Access millions of free stock photos, HD videos, wallpapers, 
-                        and generate unique AI art - all in one platform.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-image"></i>
-                            <div>
-                                <h3>5M+</h3>
-                                <p>Free Photos</p>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-video"></i>
-                            <div>
-                                <h3>2M+</h3>
-                                <p>HD Videos</p>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-desktop"></i>
-                            <div>
-                                <h3>10M+</h3>
-                                <p>Wallpapers</p>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-robot"></i>
-                            <div>
-                                <h3>∞</h3>
-                                <p>AI Generations</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-                         alt="Creative Artwork">
-                </div>
-            </div>
-        </section>
-
-        <!-- Trending Section -->
-        <section class="trending-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-fire"></i>
-                        Trending This Week
-                    </h2>
-                    <a href="#explore" class="view-all">
-                        View All <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="trending-grid" id="trendingGrid">
-                    <!-- Trending content loaded dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Categories Section -->
-        <section class="categories-section">
-            <div class="container">
-                <h2 class="section-title">Popular Categories</h2>
-                <div class="categories-grid" id="categoriesGrid">
-                    <!-- Categories loaded dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Content Tabs -->
-        <section class="content-tabs-section">
-            <div class="container">
-                <div class="content-tabs">
-                    <button class="content-tab active" data-tab="photos">
-                        <i class="fas fa-image"></i> Photos
-                    </button>
-                    <button class="content-tab" data-tab="videos">
-                        <i class="fas fa-video"></i> Videos
-                    </button>
-                    <button class="content-tab" data-tab="wallpapers">
-                        <i class="fas fa-desktop"></i> Wallpapers
-                    </button>
-                    <button class="content-tab" data-tab="ai">
-                        <i class="fas fa-robot"></i> AI Generator
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Photos Section -->
-        <section class="content-section active" id="photosSection">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Free Stock Photos</h2>
-                    <div class="filter-controls">
-                        <select class="filter-select" id="photoSort">
-                            <option value="popular">Most Popular</option>
-                            <option value="latest">Latest</option>
-                            <option value="featured">Featured</option>
-                        </select>
-                        <select class="filter-select" id="photoOrientation">
-                            <option value="">All Orientation</option>
-                            <option value="landscape">Landscape</option>
-                            <option value="portrait">Portrait</option>
-                            <option value="square">Square</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="masonry-grid" id="photosGrid">
-                    <!-- Photos loaded dynamically -->
-                </div>
-                <div class="load-more">
-                    <button class="btn btn-secondary" id="loadMorePhotos">
-                        <i class="fas fa-plus"></i> Load More Photos
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Videos Section -->
-        <section class="content-section" id="videosSection">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Free Stock Videos</h2>
-                    <div class="filter-controls">
-                        <select class="filter-select" id="videoSort">
-                            <option value="popular">Most Popular</option>
-                            <option value="latest">Latest</option>
-                            <option value="featured">Featured</option>
-                        </select>
-                        <select class="filter-select" id="videoDuration">
-                            <option value="">All Durations</option>
-                            <option value="short">Short (&lt;30s)</option>
-                            <option value="medium">Medium (30s-2min)</option>
-                            <option value="long">Long (&gt;2min)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="video-grid" id="videosGrid">
-                    <!-- Videos loaded dynamically -->
-                </div>
-                <div class="load-more">
-                    <button class="btn btn-secondary" id="loadMoreVideos">
-                        <i class="fas fa-plus"></i> Load More Videos
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Wallpapers Section -->
-        <section class="content-section" id="wallpapersSection">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">HD Wallpapers</h2>
-                    <div class="filter-controls">
-                        <select class="filter-select" id="wallpaperSort">
-                            <option value="relevance">Relevance</option>
-                            <option value="date_added">Date Added</option>
-                            <option value="favorites">Favorites</option>
-                            <option value="toplist">Top List</option>
-                        </select>
-                        <select class="filter-select" id="wallpaperCategory">
-                            <option value="">All Categories</option>
-                            <option value="general">General</option>
-                            <option value="anime">Anime</option>
-                            <option value="people">People</option>
-                            <option value="nature">Nature</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="wallpaper-grid" id="wallpapersGrid">
-                    <!-- Wallpapers loaded dynamically -->
-                </div>
-                <div class="load-more">
-                    <button class="btn btn-secondary" id="loadMoreWallpapers">
-                        <i class="fas fa-plus"></i> Load More Wallpapers
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- AI Generator Section -->
-        <section class="content-section" id="aiSection">
-            <div class="container">
-                <div class="ai-generator-container">
-                    <div class="ai-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-magic"></i> AI Image Generator
-                        </h2>
-                        <div class="ai-stats">
-                            <span class="stat-badge">
-                                <i class="fas fa-bolt"></i>
-                                <span id="generationCount">0</span> Generated
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="ai-generator">
-                        <div class="ai-prompt-section">
-                            <div class="prompt-input-container">
-                                <textarea id="aiPrompt" class="prompt-input" 
-                                          placeholder="Describe your image... (e.g., A stunning landscape with mountains and sunset, digital art style)" 
-                                          rows="3"></textarea>
-                                <div class="prompt-actions">
-                                    <div class="char-count">
-                                        <span id="charCount">0</span>/500
-                                    </div>
-                                    <button class="btn btn-small" id="clearPrompt">
-                                        <i class="fas fa-eraser"></i> Clear
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="style-selection">
-                                <h4>Style Presets:</h4>
-                                <div class="style-grid">
-                                    <button class="style-btn active" data-style="realistic">
-                                        <i class="fas fa-camera"></i> Photorealistic
-                                    </button>
-                                    <button class="style-btn" data-style="anime">
-                                        <i class="fas fa-paint-brush"></i> Anime
-                                    </button>
-                                    <button class="style-btn" data-style="digital">
-                                        <i class="fas fa-desktop"></i> Digital Art
-                                    </button>
-                                    <button class="style-btn" data-style="minimal">
-                                        <i class="fas fa-square"></i> Minimalist
-                                    </button>
-                                    <button class="style-btn" data-style="cyberpunk">
-                                        <i class="fas fa-city"></i> Cyberpunk
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="quick-prompts">
-                                <h4>Quick Ideas:</h4>
-                                <div class="quick-prompts-grid">
-                                    <button class="quick-prompt-btn" data-prompt="A futuristic city with flying cars and neon lights">
-                                        Futuristic City
-                                    </button>
-                                    <button class="quick-prompt-btn" data-prompt="A serene mountain landscape at golden hour">
-                                        Mountain Sunset
-                                    </button>
-                                    <button class="quick-prompt-btn" data-prompt="A cute anime character with magical powers">
-                                        Anime Character
-                                    </button>
-                                    <button class="quick-prompt-btn" data-prompt="Abstract geometric pattern in vibrant neon colors">
-                                        Abstract Art
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <button class="btn btn-primary btn-large" id="generateAI">
-                                <i class="fas fa-magic"></i>
-                                <span>Generate Image</span>
-                                <div class="btn-loading" style="display: none;">
-                                    <div class="loading-spinner-small"></div>
-                                    <span>Generating...</span>
-                                </div>
-                            </button>
-                        </div>
-                        
-                        <div class="ai-progress" id="aiProgress" style="display: none;">
-                            <div class="progress-header">
-                                <h4>Creating Your Image</h4>
-                                <span class="progress-time" id="progressTime">0s</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill"></div>
-                            </div>
-                            <div class="progress-steps">
-                                <div class="progress-step active">
-                                    <i class="fas fa-brain"></i>
-                                    <span>Processing Prompt</span>
-                                </div>
-                                <div class="progress-step">
-                                    <i class="fas fa-palette"></i>
-                                    <span>Generating Art</span>
-                                </div>
-                                <div class="progress-step">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Finalizing Image</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="ai-results" id="aiResults">
-                            <div class="results-header">
-                                <h3>Generated Images</h3>
-                                <div class="results-actions">
-                                    <button class="btn btn-small" id="clearAllAI">
-                                        <i class="fas fa-trash"></i> Clear All
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="ai-grid" id="aiGrid">
-                                <div class="empty-state">
-                                    <i class="fas fa-robot"></i>
-                                    <h4>No Images Generated Yet</h4>
-                                    <p>Enter a prompt above and click "Generate Image"</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Collections Section -->
-        <section class="collections-section" id="collectionsSection">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-bookmark"></i> My Collections
-                    </h2>
-                    <button class="btn btn-primary" id="createCollectionBtn">
-                        <i class="fas fa-plus"></i> New Collection
-                    </button>
-                </div>
-                <div class="collections-grid" id="collectionsGrid">
-                    <div class="empty-collections">
-                        <i class="fas fa-bookmark"></i>
-                        <h3>No Collections Yet</h3>
-                        <p>Create your first collection to save your favorite content</p>
-                        <button class="btn btn-primary" id="createFirstCollection">
-                            Create Collection
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Media Modal -->
-    <div class="media-modal" id="mediaModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title" id="modalTitle"></div>
-                <div class="modal-actions">
-                    <button class="modal-btn like-btn" id="modalLikeBtn">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <button class="modal-btn download-btn" id="modalDownloadBtn">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    <button class="modal-btn collection-btn" id="modalCollectionBtn">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                    <button class="modal-close" id="modalCloseBtn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="media-container">
-                    <img id="modalImage" src="" alt="" class="modal-media">
-                    <video id="modalVideo" controls class="modal-media" style="display: none;">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div class="media-info">
-                    <div class="author-info">
-                        <div class="author-avatar" id="modalAuthorAvatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-details">
-                            <h4 id="modalAuthorName"></h4>
-                            <p id="modalStats"></p>
-                        </div>
-                    </div>
-                    <div class="media-tags" id="modalTags"></div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </header>
 
-    <!-- Collection Modal -->
-    <div class="collection-modal" id="collectionModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 id="collectionModalTitle">Add to Collection</h3>
-                <button class="modal-close" id="closeCollectionModal">
-                    <i class="fas fa-times"></i>
-                </button>
+  <!-- Mobile Navigation Menu -->
+  <div id="mobileMenu" class="mobile-menu">
+    <div class="flex flex-col h-full bg-white">
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <span class="text-2xl font-bold text-purple-600">Quizontal</span>
+        <button id="closeMobileMenu" class="p-2 text-gray-700">
+          <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="space-y-2">
+          <div class="mobile-nav-item">
+            <button class="flex justify-between items-center w-full py-3 text-gray-900 text-lg font-medium">
+              Images
+              <i data-lucide="chevron-down" class="h-5 w-5 transition-transform"></i>
+            </button>
+            <div class="mobile-nav-dropdown pl-4">
+              <a href="#" class="block py-2 text-gray-600">Nature</a>
+              <a href="#" class="block py-2 text-gray-600">Abstract</a>
+              <a href="#" class="block py-2 text-gray-600">Business</a>
+              <a href="#" class="block py-2 text-gray-600">Technology</a>
+              <a href="#" class="block py-2 text-gray-600">Travel</a>
             </div>
-            <div class="modal-body">
-                <div class="collection-list" id="collectionList">
-                    <!-- Collections loaded dynamically -->
-                </div>
-                <button class="btn btn-secondary btn-full" id="createNewCollectionBtn">
-                    <i class="fas fa-plus"></i> Create New Collection
-                </button>
+          </div>
+          
+          <div class="mobile-nav-item">
+            <button class="flex justify-between items-center w-full py-3 text-gray-900 text-lg font-medium">
+              Videos
+              <i data-lucide="chevron-down" class="h-5 w-5 transition-transform"></i>
+            </button>
+            <div class="mobile-nav-dropdown pl-4">
+              <a href="#" class="block py-2 text-gray-600">Stock Videos</a>
+              <a href="#" class="block py-2 text-gray-600">Motion Graphics</a>
+              <a href="#" class="block py-2 text-gray-600">4K Videos</a>
+              <a href="#" class="block py-2 text-gray-600">Background Videos</a>
             </div>
+          </div>
+          
+          <a href="#ai-tools" class="block py-3 text-gray-900 text-lg font-medium">AI Generator</a>
+          <a href="#pricing" class="block py-3 text-gray-900 text-lg font-medium">Pricing</a>
+          <a href="#gallery" class="block py-3 text-gray-900 text-lg font-medium">Gallery</a>
+          <a href="#testimonials" class="block py-3 text-gray-900 text-lg font-medium">Testimonials</a>
         </div>
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <button class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3.5 rounded-lg text-base font-medium transition-colors">
+            Get Started Free
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Create Collection Modal -->
-    <div class="create-collection-modal" id="createCollectionModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3>Create New Collection</h3>
-                <button class="modal-close" id="closeCreateCollectionModal">
-                    <i class="fas fa-times"></i>
-                </button>
+  <!-- Hero Section with Video -->
+  <section class="relative text-white overflow-hidden min-h-[90vh] flex items-center">
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="video-background">
+      <source src="https://cdn.pixabay.com/video/2020/12/03/58193-487176852_large.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    
+    <!-- Dark overlay -->
+    <div class="video-overlay"></div>
+    
+    <!-- Hero content -->
+    <div class="relative z-10 content-container">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8 fade-in-left">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+            Unlimited Creative Assets at Your Fingertips
+          </h1>
+          <p class="text-xl text-gray-200 leading-relaxed">
+            Discover millions of high-quality wallpapers, stock photos, videos, and AI-generated images. Fast search, instant downloads, and powerful AI tools for creators.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button class="bg-white text-purple-900 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+              Start Creating Free
+            </button>
+            <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-colors">
+              Explore Gallery
+            </button>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 sm:gap-8 text-sm text-gray-300">
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="h-5 w-5 text-green-400"></i>
+              <span>10M+ Assets</span>
             </div>
-            <div class="modal-body">
-                <form id="createCollectionForm">
-                    <div class="form-group">
-                        <label for="collectionName">Collection Name</label>
-                        <input type="text" id="collectionName" placeholder="Enter collection name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="collectionDescription">Description (Optional)</label>
-                        <textarea id="collectionDescription" placeholder="Describe your collection" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Visibility</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="visibility" value="public" checked>
-                                <span class="radio-custom"></span>
-                                <span class="radio-text">Public</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="visibility" value="private">
-                                <span class="radio-custom"></span>
-                                <span class="radio-text">Private</span>
-                            </label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">
-                        Create Collection
-                    </button>
-                </form>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="h-5 w-5 text-green-400"></i>
+              <span>AI-Powered</span>
             </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="h-5 w-5 text-green-400"></i>
+              <span>Instant Download</span>
+            </div>
+          </div>
         </div>
+        <div class="relative fade-in-right">
+          <img 
+            src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/hero/hero-main-d1fe2724351f44768f077d7da606bdad.png" 
+            alt="Creative workspace showcasing platform features" 
+            class="w-full rounded-2xl object-cover shadow-2xl"
+            loading="eager"
+          >
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-palette"></i>
-                        <span>Quizontal</span>
-                    </div>
-                    <p class="footer-description">
-                        The world's largest free stock media platform. 
-                        Discover, create, and share stunning visual content.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Products</h4>
-                    <ul class="footer-links">
-                        <li><a href="#photos">Free Photos</a></li>
-                        <li><a href="#videos">HD Videos</a></li>
-                        <li><a href="#wallpapers">Wallpapers</a></li>
-                        <li><a href="#ai">AI Generator</a></li>
-                        <li><a href="#api">API</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <ul class="footer-links">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#careers">Careers</a></li>
-                        <li><a href="#press">Press</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <ul class="footer-links">
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#cookies">Cookie Policy</a></li>
-                        <li><a href="#licensing">Licensing</a></li>
-                        <li><a href="#dmca">DMCA</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 Quizontal. All rights reserved.</p>
-                <div class="footer-bottom-links">
-                    <a href="#sitemap">Sitemap</a>
-                    <a href="#language">English</a>
-                    <a href="#help">Help Center</a>
-                </div>
-            </div>
+  <!-- Features Section -->
+  <section class="bg-gray-50">
+    <div class="content-container">
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Everything You Need for Creative Success</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Powerful features designed to streamline your creative workflow and deliver professional results every time.
+        </p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 stagger-animation">
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift fade-in-up">
+          <div class="mb-6">
+            <img 
+              src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/features/features-1-472d3e13759d4184b2acd188b42919f9.png" 
+              alt="Fast search interface" 
+              class="w-full rounded-xl object-cover"
+            >
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">Lightning-Fast Search</h3>
+          <p class="text-gray-600 mb-4">
+            Find exactly what you need in seconds with our advanced search engine. Filter by category, color, style, and more.
+          </p>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-500"></i>
+              Smart keyword matching
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-500"></i>
+              Advanced filters
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-blue-500"></i>
+              Visual similarity search
+            </li>
+          </ul>
         </div>
-    </footer>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift fade-in-up">
+          <div class="mb-6">
+            <img 
+              src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/features/features-2-038acb20e7104099becf226cadfacec5.png" 
+              alt="Easy download interface" 
+              class="w-full rounded-xl object-cover"
+            >
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">Instant Downloads</h3>
+          <p class="text-gray-600 mb-4">
+            Download high-quality assets instantly in multiple formats and resolutions. No waiting, no hassle.
+          </p>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
+              Multiple resolutions
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
+              Various file formats
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
+              Batch downloads
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift fade-in-up">
+          <div class="mb-6">
+            <img 
+              src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/features/features-3-8ead651651de4e84baea747f4f8080e1.png" 
+              alt="Premium quality content" 
+              class="w-full rounded-xl object-cover"
+            >
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Quality</h3>
+          <p class="text-gray-600 mb-4">
+            Every asset is carefully curated and quality-checked to ensure professional standards for your projects.
+          </p>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-500"></i>
+              Hand-picked content
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-500"></i>
+              Professional standards
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="h-4 w-4 text-purple-500"></i>
+              Regular updates
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- JavaScript Files -->
-    <script src="firebase-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="app.js"></script>
-    <script src="user-profile.js"></script>
-    <script src="collections.js"></script>
-    <script src="ai-generator.js"></script>
-    <script src="media-loader.js"></script>
-</body>
-</html>
+  <!-- Gallery Section -->
+  <section id="gallery" class="bg-white">
+    <div class="content-container">
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Trending Gallery</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Explore our collection of trending images, videos, and wallpapers
+        </p>
+      </div>
+
+      <!-- Left-aligned trending card -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+        <div class="trending-card-left fade-in-left">
+          <img 
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+            alt="Mountain landscape wallpaper" 
+            class="w-full h-[500px] object-cover rounded-2xl shadow-xl"
+          >
+          <div class="absolute bottom-6 left-6 text-white">
+            <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">Trending</span>
+            <h3 class="text-2xl font-bold mt-3">Mountain Majesty</h3>
+            <p class="text-gray-200">4K Nature Wallpaper</p>
+          </div>
+        </div>
+        <div class="space-y-6 fade-in-right">
+          <h3 class="text-3xl font-bold text-gray-900">Nature Collection</h3>
+          <p class="text-gray-600 text-lg">
+            Discover breathtaking landscapes, wildlife photography, and natural wonders from around the world. Perfect for desktop wallpapers and design projects.
+          </p>
+          <div class="grid grid-cols-2 gap-4 mt-8">
+            <div class="bg-gray-50 p-4 rounded-xl">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="mountain" class="h-5 w-5 text-green-500"></i>
+                <span class="font-medium">Landscapes</span>
+              </div>
+              <p class="text-sm text-gray-500">2,500+ images</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="leaf" class="h-5 w-5 text-green-500"></i>
+                <span class="font-medium">Wildlife</span>
+              </div>
+              <p class="text-sm text-gray-500">1,800+ images</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right-aligned trending card -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="lg:order-2 trending-card-right fade-in-right">
+          <img 
+            src="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+            alt="Abstract digital art" 
+            class="w-full h-[500px] object-cover rounded-2xl shadow-xl"
+          >
+          <div class="absolute bottom-6 right-6 text-white">
+            <span class="bg-pink-600 text-white px-4 py-1 rounded-full text-sm font-medium">Hot</span>
+            <h3 class="text-2xl font-bold mt-3">Digital Dreams</h3>
+            <p class="text-gray-200">AI Generated Art</p>
+          </div>
+        </div>
+        <div class="lg:order-1 space-y-6 fade-in-left">
+          <h3 class="text-3xl font-bold text-gray-900">AI Art Gallery</h3>
+          <p class="text-gray-600 text-lg">
+            Explore unique AI-generated artwork with stunning visual effects, creative patterns, and innovative designs. Perfect for modern digital projects.
+          </p>
+          <div class="grid grid-cols-2 gap-4 mt-8">
+            <div class="bg-gray-50 p-4 rounded-xl">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="palette" class="h-5 w-5 text-purple-500"></i>
+                <span class="font-medium">Abstract</span>
+              </div>
+              <p class="text-sm text-gray-500">3,200+ images</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="zap" class="h-5 w-5 text-yellow-500"></i>
+                <span class="font-medium">Futuristic</span>
+              </div>
+              <p class="text-sm text-gray-500">2,100+ images</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Grid -->
+      <div class="mt-20">
+        <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Popular This Week</h3>
+        <div class="gallery-grid">
+          <div class="rounded-xl overflow-hidden shadow-md hover-lift scale-in">
+            <img 
+              src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              alt="City skyline" 
+              class="w-full h-48 object-cover"
+            >
+            <div class="p-4">
+              <h4 class="font-semibold text-gray-900">Urban Architecture</h4>
+              <p class="text-sm text-gray-500 mt-1">1.2k downloads</p>
+            </div>
+          </div>
+          <div class="rounded-xl overflow-hidden shadow-md hover-lift scale-in">
+            <img 
+              src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              alt="Space background" 
+              class="w-full h-48 object-cover"
+            >
+            <div class="p-4">
+              <h4 class="font-semibold text-gray-900">Cosmic Wonders</h4>
+              <p class="text-sm text-gray-500 mt-1">980 downloads</p>
+            </div>
+          </div>
+          <div class="rounded-xl overflow-hidden shadow-md hover-lift scale-in">
+            <img 
+              src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              alt="Beach sunset" 
+              class="w-full h-48 object-cover"
+            >
+            <div class="p-4">
+              <h4 class="font-semibold text-gray-900">Ocean Sunset</h4>
+              <p class="text-sm text-gray-500 mt-1">1.5k downloads</p>
+            </div>
+          </div>
+          <div class="rounded-xl overflow-hidden shadow-md hover-lift scale-in">
+            <img 
+              src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              alt="Abstract colors" 
+              class="w-full h-48 object-cover"
+            >
+            <div class="p-4">
+              <h4 class="font-semibold text-gray-900">Color Splash</h4>
+              <p class="text-sm text-gray-500 mt-1">850 downloads</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Tools Section -->
+  <section id="ai-tools" class="bg-gray-50">
+    <div class="content-container">
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Powered by Advanced AI Technology</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Transform your creative workflow with cutting-edge AI tools designed for professionals and creators.
+        </p>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-16 items-center mb-20">
+        <div class="space-y-8">
+          <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 hover-lift fade-in-left">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="zap" class="h-6 w-6 text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900">AI Image Generator</h3>
+            </div>
+            <p class="text-gray-700 mb-6">
+              Create unlimited custom images from text descriptions. Perfect for unique wallpapers, concept art, and creative projects.
+            </p>
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-purple-600"></i>
+                <span class="text-gray-700">Text-to-image generation</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-purple-600"></i>
+                <span class="text-gray-700">Multiple art styles</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-purple-600"></i>
+                <span class="text-gray-700">High-resolution output</span>
+              </li>
+            </ul>
+            <button class="bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors">
+              Try AI Generator
+            </button>
+          </div>
+          <div class="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-8 hover-lift fade-in-left">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="image" class="h-6 w-6 text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900">Background Remover</h3>
+            </div>
+            <p class="text-gray-700 mb-6">
+              Remove image backgrounds instantly with professional accuracy. Perfect for product photos, portraits, and design work.
+            </p>
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-green-600"></i>
+                <span class="text-gray-700">One-click removal</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-green-600"></i>
+                <span class="text-gray-700">Professional accuracy</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <i data-lucide="check" class="h-5 w-5 text-green-600"></i>
+                <span class="text-gray-700">Batch processing</span>
+              </li>
+            </ul>
+            <button class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+              Try Background Remover
+            </button>
+          </div>
+        </div>
+        <div class="grid gap-8">
+          <div class="relative fade-in-right">
+            <img 
+              src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/ai-tools/ai-generator-32ff7498c5484387bf1d8e265a9c0eb6.png" 
+              alt="AI image generation interface" 
+              class="w-full rounded-2xl object-cover shadow-lg"
+            >
+          </div>
+          <div class="relative fade-in-right">
+            <img 
+              src="https://cdn.ailandingpage.ai/landingpage_io/user-generate/bbcfe533-2f75-4bde-b995-4d38e9638803/bbcfe533-2f75-4bde-b995-4d38e9638803/ai-tools/background-remover-7f4d9e1e958148ac9951e2c811bb2480.png" 
+              alt="Background removal tool demonstration" 
+              class="w-full rounded-2xl object-cover shadow-lg"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="bg-white">
+    <div class="content-container">
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Get unlimited access to premium content and AI tools with flexible pricing options
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto stagger-animation">
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover-lift scale-in">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Free</h3>
+            <div class="text-3xl font-bold text-gray-900 mb-1">$0</div>
+            <p class="text-gray-600">per month</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              5 downloads per day
+            </li>
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Standard quality images
+            </li>
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Basic AI generation
+            </li>
+          </ul>
+          <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 rounded-lg font-medium transition-colors">
+            Get Started
+          </button>
+        </div>
+        <div class="bg-blue-600 text-white rounded-2xl p-8 relative hover-lift scale-in">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
+          </div>
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-semibold mb-2">Pro</h3>
+            <div class="text-3xl font-bold mb-1">$19</div>
+            <p class="text-blue-100">per month</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center">
+              <i data-lucide="check" class="h-5 w-5 text-green-400 mr-3"></i>
+              Unlimited downloads
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="h-5 w-5 text-green-400 mr-3"></i>
+              4K & HD quality
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="h-5 w-5 text-green-400 mr-3"></i>
+              Advanced AI tools
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="h-5 w-5 text-green-400 mr-3"></i>
+              Background removal
+            </li>
+          </ul>
+          <button class="w-full bg-white text-blue-600 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+            Start Free Trial
+          </button>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-2xl p-8 hover-lift scale-in">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Enterprise</h3>
+            <div class="text-3xl font-bold text-gray-900 mb-1">$49</div>
+            <p class="text-gray-600">per month</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Everything in Pro
+            </li>
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Team collaboration
+            </li>
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Priority support
+            </li>
+            <li class="flex items-center text-gray-700">
+              <i data-lucide="check" class="h-5 w-5 text-green-500 mr-3"></i>
+              Custom integrations
+            </li>
+          </ul>
+          <button class="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium transition-colors">
+            Contact Sales
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="bg-gray-50">
+    <div class="content-container">
+      <div class="text-center mb-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Trusted by Creative Professionals</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          See what designers, content creators, and businesses say about our platform
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-animation">
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift rotate-in">
+          <div class="flex items-center mb-4">
+            <div class="flex text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <blockquote class="text-gray-700 mb-6">
+            "The AI background removal tool is a game-changer for my design workflow. What used to take me hours now takes seconds, and the quality is incredible."
+          </blockquote>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+              <span class="font-bold text-purple-600">SC</span>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Sarah Chen</div>
+              <div class="text-sm text-gray-600">Graphic Designer</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift rotate-in">
+          <div class="flex items-center mb-4">
+            <div class="flex text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <blockquote class="text-gray-700 mb-6">
+            "As a content creator, I need fresh visuals constantly. The AI image generation feature helps me create unique content that perfectly matches my brand."
+          </blockquote>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+              <span class="font-bold text-green-600">MR</span>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Marcus Rodriguez</div>
+              <div class="text-sm text-gray-600">Content Creator</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover-lift rotate-in">
+          <div class="flex items-center mb-4">
+            <div class="flex text-yellow-400 mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+          <blockquote class="text-gray-700 mb-6">
+            "Our marketing team relies on this platform for all our visual content needs. The search functionality is lightning-fast, and the Pro plan gives us unlimited access."
+          </blockquote>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+              <span class="font-bold text-blue-600">ET</span>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Emily Thompson</div>
+              <div class="text-sm text-gray-600">Marketing Director</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhanced Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="content-container py-12">
+      <!-- Newsletter Section - Moved below title and description -->
+      <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 mb-12 fade-in-up">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 class="text-2xl font-bold mb-3">Stay Updated with Creative Insights</h3>
+            <p class="text-blue-100">
+              Subscribe to our newsletter and get the latest design trends, AI tips, and exclusive content directly in your inbox.
+            </p>
+          </div>
+          <div>
+            <form id="newsletterForm" class="flex flex-col sm:flex-row gap-4">
+              <input 
+                type="email" 
+                placeholder="Enter your email address" 
+                class="flex-1 px-6 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                required
+              >
+              <button 
+                type="submit" 
+                class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap"
+              >
+                Subscribe
+              </button>
+            </form>
+            <p class="text-sm text-blue-200 mt-3">By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Footer Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <span class="text-2xl font-bold text-purple-400 mb-4 inline-block">Quizontal</span>
+          <p class="mt-4 text-gray-400 text-sm mb-6">
+            Your ultimate destination for high-quality visual content and AI-powered creative tools. Empowering creators worldwide.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="bg-gray-800 hover:bg-purple-600 text-white p-3 rounded-full transition-colors">
+              <i data-lucide="twitter" class="h-5 w-5"></i>
+            </a>
+            <a href="#" class="bg-gray-800 hover:bg-purple-600 text-white p-3 rounded-full transition-colors">
+              <i data-lucide="facebook" class="h-5 w-5"></i>
+            </a>
+            <a href="#" class="bg-gray-800 hover:bg-purple-600 text-white p-3 rounded-full transition-colors">
+              <i data-lucide="instagram" class="h-5 w-5"></i>
+            </a>
+            <a href="#" class="bg-gray-800 hover:bg-purple-600 text-white p-3 rounded-full transition-colors">
+              <i data-lucide="linkedin" class="h-5 w-5"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-6 text-white">Product</h3>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Images</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Videos</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Wallpapers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">AI Generator</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Background Remover</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-6 text-white">Company</h3>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Careers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Contact</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Press</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-6 text-white">Support</h3>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">License</a></li>
+            <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm text-center md:text-left">
+          © 2024 Quizontal. All rights reserved. All trademarks and registered trademarks are the property of their respective owners.
+        </p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Mobile menu functionality
+    const mobileMenu = document.getElementById('mobileMenu');
+    const openMobileMenuBtn = document.getElementById('openMobileMenu');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+
+    function openMobileMenu() {
+      mobileMenu.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    openMobileMenuBtn.addEventListener('click', openMobileMenu);
+    closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+
+    // Mobile dropdown functionality
+    document.querySelectorAll('.mobile-nav-item button').forEach(button => {
+      button.addEventListener('click', () => {
+        const dropdown = button.nextElementSibling;
+        const icon = button.querySelector('i');
+        
+        dropdown.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+          icon.style.transform = 'rotate(180deg)';
+        } else {
+          icon.style.transform = 'rotate(0deg)';
+        }
+      });
+    });
+
+    // Scroll animations
+    function checkScroll() {
+      const elements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .scale-in, .rotate-in');
+      
+      elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (elementTop < windowHeight - 100) {
+          element.classList.add('animated');
+        }
+      });
+      
+      // Staggered animations
+      const staggerContainers = document.querySelectorAll('.stagger-animation');
+      staggerContainers.forEach(container => {
+        const items = container.children;
+        Array.from(items).forEach((item, index) => {
+          const itemTop = item.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+          
+          if (itemTop < windowHeight - 100) {
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, index * 200);
+          }
+        });
+      });
+    }
+
+    // Initial check
+    checkScroll();
+    
+    // Check on scroll
+    window.addEventListener('scroll', checkScroll);
+
+    // Newsletter form submission
+    const newsletterForm = document.getElementById('newsletterForm');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const emailInput = newsletterForm.querySelector('input[type="email"]');
+        const email = emailInput.value.trim();
+        
+        if (email) {
+          // Here you would typically send the email to your backend
+          alert('Thank you for subscribing to our newsletter!');
+          emailInput.value = '';
+        }
+      });
+    }
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          if (mobileMenu.classList.contains('active')) {
+            closeMobileMenu();
+          }
+        }
+      });
+    });
+
+    // Video fallback and autoplay
+    const video = document.querySelector('.video-background');
+    if (video) {
+      video.play().catch(error => {
+        console.log('Video autoplay failed:', error);
+        // Show fallback image if video fails
+        const heroSection = document.querySelector('section');
+        heroSection.style.backgroundImage = 'linear-gradient(to bottom right, #4c1d95, #1e3a8a, #312e81)';
+      });
+    }
+
+    // Hover effect for navigation dropdowns
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.querySelector('.nav-dropdown').style.display = 'block';
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        item.querySelector('.nav-dropdown').style.display = 'none';
+      });
+    });
+
+    // Preload important images
+    const preloadImages = [
+      'https://cdn.pixabay.com/video/2020/12/03/58193-487176852_large.mp4',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'
+    ];
+
+    // Add loading animation for images
+    document.addEventListener('DOMContentLoaded', () => {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        img.addEventListener('load', () => {
+          img.style.opacity = '1';
+          img.style.transition = 'opacity 0.5s ease';
+        });
+        img.style.opacity = '0';
+      });
+    });
+  </script>
+
+</body></html>
